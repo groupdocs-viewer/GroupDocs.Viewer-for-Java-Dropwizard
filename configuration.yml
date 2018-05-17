@@ -1,0 +1,76 @@
+################################################
+# Server configurations
+################################################
+
+# Set server params
+server:
+  type: simple
+  applicationContextPath: /
+  adminContextPath: /admin
+  connector:
+    type: http
+    port: 8080
+
+################################################
+# Application configurations
+################################################
+application:
+    # License path
+    # Absolute path to GroupDocs license file
+    licensePath: /Users/GroupDocs/Viewer/GroupDocs.Viewer.lic
+    # Directory where all original files are stored
+    filesDirectory: /Users/GroupDocs/Viewer/Documents/
+    # Fonts path
+    # Absolute path to custom fonts directory
+    fontsDirectory: /Users/GroupDocs/Viewer/Fonts/
+
+resources:
+  # Web resources
+  # Url/link to web resources (html, js, css, etc) archive
+  resourcesUrl: https://github.com/groupdocs-viewer/GroupDocs.Viewer.JS/archive/master.zip
+  # Resources download
+  # Set false to download resources on each application run/restart
+  # Set true to use resources from project
+  offlineMode: false
+  # Default document
+  # Absolute or relative path to default document
+  defaultDocument: ''
+  # HTML rendering mode
+  # Set false for image mode
+  # Set true for HTML mode
+  htmlMode: true
+  # Pages preload
+  # How many pages from a document should be loaded, remaining pages will be loaded on page scrolling
+  # Set 0 to load all pages at once
+  preloadPageCount: 0
+  # File rewriting on document uploading
+  # Set false to keep both files
+  # Set true to replace files with same name
+  rewrite: true
+  # Document zoom
+  # Set false to disable document zooming
+  zoom: true
+  # Page navigation
+  # Set false to disable document navigation (go to next, previous, last and first page)
+  pageSelector: true
+  # Document search
+  # Set false to disable document text search
+  search: true
+  # Thumbnails
+  # Set false to disbale thumbnails
+  thumbnails: true
+  # Page rotation
+  # Set false to disbale pages rotation
+  rotate: true
+  # Document download
+  # Set false to disbale document download
+  download: true
+  # Document upload
+  # Set false to disbale document upload
+  upload: true
+  # Document print
+  # Set false to disbale document print
+  print: true
+  # File browser
+  # Set false to disbale document browse
+  browse: true
