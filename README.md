@@ -18,7 +18,7 @@ Thanks to powerful and flexible [GroupDocs.Viewer for Java](https://products.gro
 
 
 ## Demo Video
-https://www.youtube.com/watch?v=Gm7oJ2gJOJM
+https://www.youtube.com/watch?v=pA98PkdXcN8
 
 
 ## Features
