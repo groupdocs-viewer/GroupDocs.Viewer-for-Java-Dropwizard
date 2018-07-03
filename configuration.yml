@@ -1,8 +1,6 @@
 ################################################
 # Server configurations
 ################################################
-
-# Set server params
 server:
   type: simple
   applicationContextPath: /
@@ -11,27 +9,26 @@ server:
     type: http
     port: 8080
 
+
 ################################################
-# Application configurations
+# Application (global) configurations
 ################################################
 application:
     # License path
     # Absolute path to GroupDocs license file
-    licensePath: /Users/GroupDocs/Viewer/GroupDocs.Viewer.lic
-    # Directory where all original files are stored
-    filesDirectory: /Users/GroupDocs/Viewer/Documents/
-    # Fonts path
-    # Absolute path to custom fonts directory
-    fontsDirectory: /Users/GroupDocs/Viewer/Fonts/
+    licensePath:  C:/GroupDocs/Java/Total/GroupDocs.Total.Java.lic
 
-resources:
-  # Web resources
-  # Url/link to web resources (html, js, css, etc) archive
-  resourcesUrl: https://github.com/groupdocs-viewer/GroupDocs.Viewer.JS/archive/master.zip
-  # Resources download
-  # Set false to download resources on each application run/restart
-  # Set true to use resources from project
-  offlineMode: false
+
+################################################
+# GroupDocs.Viewer configurations
+################################################
+viewer:
+  # Files directory path
+  # Absolute or relative path to files directory
+  filesDirectory: /App_Data/
+  # Fonts path
+  # Absolute path to custom fonts directory
+  fontsDirectory: ''
   # Default document
   # Absolute or relative path to default document
   defaultDocument: ''
@@ -57,20 +54,20 @@ resources:
   # Set false to disable document text search
   search: true
   # Thumbnails
-  # Set false to disbale thumbnails
+  # Set false to disable thumbnails
   thumbnails: true
   # Page rotation
-  # Set false to disbale pages rotation
+  # Set false to disable pages rotation
   rotate: true
   # Document download
-  # Set false to disbale document download
+  # Set false to disable document download
   download: true
   # Document upload
-  # Set false to disbale document upload
+  # Set false to disable document upload
   upload: true
   # Document print
-  # Set false to disbale document print
+  # Set false to disable document print
   print: true
   # File browser
-  # Set false to disbale document browse
+  # Set false to disable document browse
   browse: true

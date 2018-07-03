@@ -1,37 +1,36 @@
-<#-- @ftlvariable name="" type="com.groupdocs.ui.viewer.views.Viewer" -->
+<#-- @ftlvariable name="" type="Viewer" -->
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Viewer for Java Dropwizard</title>
-        <link type="text/css" rel="stylesheet" href="assets/css/font-awesome.min.css"/>
-        <link type="text/css" rel="stylesheet" href="assets/css/viewer.css"/>
-        <link type="text/css" rel="stylesheet" href="assets/css/viewer.mobile.css"/>
-        <link type="text/css" rel="stylesheet" href="assets/css/viewer-dark.css"/>
-		<link type="text/css" rel="stylesheet" href="assets/css/viewer-circle-progress.css"/>
-		<link rel="stylesheet" href="assets/css/swiper.min.css">
-        <script src="assets/js/jquery.min.js"></script>
-		<script src="assets/js/swiper.min.js"></script>
-        <script type="text/javascript" src="assets/js/viewer.js"></script>
+        <title>GroupDocs.Viewer for Java Dropwizard</title>
+        <link type="text/css" rel="stylesheet" href="assets/common/css/font-awesome.min.css"/>
+        <link type="text/css" rel="stylesheet" href="assets/common/css/swiper.min.css">
+        <link type="text/css" rel="stylesheet" href="assets/common/css/circle-progress.css"/>
+        <link type="text/css" rel="stylesheet" href="assets/viewer/css/viewer.css"/>
+        <link type="text/css" rel="stylesheet" href="assets/viewer/css/viewer.mobile.css"/>
+        <link type="text/css" rel="stylesheet" href="assets/viewer/css/viewer-dark.css"/>
+        <script type="text/javascript" src="assets/common/js/jquery.min.js"></script>
+		<script type="text/javascript" src="assets/common/js/swiper.min.js"></script>
+        <script type="text/javascript" src="assets/viewer/js/viewer.js"></script>
     </head>
     <body>
         <div id="element"></div>
         <script type="text/javascript">
             $('#element').viewer({
-                applicationPath: 'http://${config.server.hostAddress}:${config.server.httpPort?c}/viewer',
-				offlineMode: ${config.resources.offlineMode?c},
-				defaultDocument: '${config.resources.defaultDocument}',
-				htmlMode: ${config.resources.htmlMode?c},
-                preloadPageCount: ${config.resources.preloadPageCount?c},
-				zoom : ${config.resources.zoom?c},
-				pageSelector: ${config.resources.pageSelector?c},
-				search: ${config.resources.search?c},
-				thumbnails: ${config.resources.thumbnails?c},
-				rotate: ${config.resources.rotate?c},
-				download: ${config.resources.download?c},
-                upload: ${config.resources.upload?c},
-                print: ${config.resources.print?c},                
-                browse: ${config.resources.browse?c},               
-                rewrite: ${config.resources.rewrite?c}
+                applicationPath: 'http://${globalConfiguration.server.hostAddress}:${globalConfiguration.server.httpPort?c}/viewer',
+				defaultDocument: '${globalConfiguration.viewer.defaultDocument}',
+				htmlMode: ${globalConfiguration.viewer.htmlMode?c},
+                preloadPageCount: ${globalConfiguration.viewer.preloadPageCount?c},
+				zoom : ${globalConfiguration.viewer.zoom?c},
+				pageSelector: ${globalConfiguration.viewer.pageSelector?c},
+				search: ${globalConfiguration.viewer.search?c},
+				thumbnails: ${globalConfiguration.viewer.thumbnails?c},
+				rotate: ${globalConfiguration.viewer.rotate?c},
+				download: ${globalConfiguration.viewer.download?c},
+                upload: ${globalConfiguration.viewer.upload?c},
+                print: ${globalConfiguration.viewer.print?c},
+                browse: ${globalConfiguration.viewer.browse?c},
+                rewrite: ${globalConfiguration.viewer.rewrite?c}
             });
         </script>
     </body>

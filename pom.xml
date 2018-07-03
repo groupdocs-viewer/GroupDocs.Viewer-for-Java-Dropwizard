@@ -6,7 +6,7 @@
 
     <groupId>com.groupdocs.ui</groupId>
     <artifactId>viewer</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
 
     <name>GroupDocs.Viewer Dropwizard</name>
@@ -18,16 +18,10 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.groupdocs</groupId>
-            <artifactId>groupdocs-viewer</artifactId>
-            <version>17.5.0</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-core</artifactId>
             <version>1.3.0</version>
-        </dependency>
+        </dependency>        
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-views-freemarker</artifactId>
@@ -73,6 +67,12 @@
             <artifactId>commons-io</artifactId>
             <version>2.6</version>
         </dependency>
+        <dependency>
+            <groupId>com.groupdocs</groupId>
+            <artifactId>groupdocs-viewer</artifactId>
+            <version>17.5.0</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
     <build>
@@ -91,7 +91,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.2.1</version>
                 <configuration>
-                    <mainClass>com.groupdocs.ui.viewer.MainService</mainClass>
+                    <mainClass>com.groupdocs.ui.common.MainService</mainClass>
                     <arguments>
                         <argument>server</argument>
                         <argument>configuration.yml</argument>
@@ -124,7 +124,7 @@
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.groupdocs.ui.viewer.MainService</mainClass>
+                                    <mainClass>com.groupdocs.ui.common.MainService</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

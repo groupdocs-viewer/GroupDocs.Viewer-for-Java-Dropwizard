@@ -1,27 +1,42 @@
 package com.groupdocs.ui.viewer.views;
 
-import com.groupdocs.ui.viewer.config.ViewerConfig;
+import com.groupdocs.ui.common.config.GlobalConfiguration;
 import io.dropwizard.views.View;
 import java.nio.charset.Charset;
 
 /**
+ * Viewer View
+ *
  * @author Aspose Pty Ltd
  */
 
 public class Viewer extends View {
-    private ViewerConfig config;
+    private GlobalConfiguration globalConfiguration;
 
-    public Viewer(ViewerConfig viewerConfig){
-        super("viewer.ftl", Charset.forName("UTF-8"));
-        config = viewerConfig;
+    /**
+     * Constructor
+     * @param globalConfiguration total configuration
+     * @param charset charset
+     */
+    public Viewer(GlobalConfiguration globalConfiguration, String charset){
+        super("viewer.ftl", Charset.forName(charset));
+        this.globalConfiguration = globalConfiguration;
     }
 
-    public ViewerConfig getConfig() {
-        return config;
+    /**
+     * Get total config
+     * @return total config
+     */
+    public GlobalConfiguration getGlobalConfiguration() {
+        return globalConfiguration;
     }
 
-    public void setConfig(ViewerConfig config) {
-        this.config = config;
+    /**
+     * Set total config
+     * @param globalConfiguration total config
+     */
+    public void setGlobalConfiguration(GlobalConfiguration globalConfiguration) {
+        this.globalConfiguration = globalConfiguration;
     }
 
 }
