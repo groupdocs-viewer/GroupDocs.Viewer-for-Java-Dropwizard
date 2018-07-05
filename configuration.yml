@@ -16,7 +16,7 @@ server:
 application:
     # License path
     # Absolute path to GroupDocs license file
-    licensePath:  C:/GroupDocs/Java/Total/GroupDocs.Total.Java.lic
+    licensePath:  C:/GroupDocs/Java/Viewer/GroupDocs.Viewer.Java.lic
 
 
 ################################################
