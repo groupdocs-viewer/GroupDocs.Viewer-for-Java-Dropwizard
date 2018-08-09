@@ -3,15 +3,15 @@
 <html>
     <head>
         <title>GroupDocs.Viewer for Java Dropwizard</title>
-        <link type="text/css" rel="stylesheet" href="assets/common/css/font-awesome.min.css"/>
-        <link type="text/css" rel="stylesheet" href="assets/common/css/swiper.min.css">
-        <link type="text/css" rel="stylesheet" href="assets/common/css/circle-progress.css"/>
-        <link type="text/css" rel="stylesheet" href="assets/viewer/css/viewer.css"/>
-        <link type="text/css" rel="stylesheet" href="assets/viewer/css/viewer.mobile.css"/>
-        <link type="text/css" rel="stylesheet" href="assets/viewer/css/viewer-dark.css"/>
-        <script type="text/javascript" src="assets/common/js/jquery.min.js"></script>
-		<script type="text/javascript" src="assets/common/js/swiper.min.js"></script>
-        <script type="text/javascript" src="assets/viewer/js/viewer.js"></script>
+        <link type="text/css" rel="stylesheet" href="/assets/common/css/font-awesome.min.css"/>
+        <link type="text/css" rel="stylesheet" href="/assets/common/css/swiper.min.css">
+        <link type="text/css" rel="stylesheet" href="/assets/common/css/circle-progress.css"/>
+        <link type="text/css" rel="stylesheet" href="/assets/viewer/css/viewer.css"/>
+        <link type="text/css" rel="stylesheet" href="/assets/viewer/css/viewer.mobile.css"/>
+        <link type="text/css" rel="stylesheet" href="/assets/viewer/css/viewer-dark.css"/>
+        <script type="text/javascript" src="/assets/common/js/jquery.min.js"></script>
+		<script type="text/javascript" src="/assets/common/js/swiper.min.js"></script>
+        <script type="text/javascript" src="/assets/viewer/js/viewer.js"></script>
     </head>
     <body>
         <div id="element"></div>

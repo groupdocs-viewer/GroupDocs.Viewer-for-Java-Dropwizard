@@ -72,12 +72,6 @@ public class ViewerResources extends Resources {
     public ViewerResources(GlobalConfiguration globalConfiguration) throws UnknownHostException {
         super(globalConfiguration);
 
-        // Check if filesDirectory is relative or absolute path
-        File filesDirectory = new File(globalConfiguration.getViewer().getFilesDirectory());
-        if(!filesDirectory.exists()){
-            globalConfiguration.getViewer().setFilesDirectory(new File("").getAbsolutePath() + filesDirectory.getPath());
-        }
-
         // create viewer application configuration
         ViewerConfig config = new ViewerConfig();
         config.setStoragePath(globalConfiguration.getViewer().getFilesDirectory());

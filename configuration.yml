@@ -25,7 +25,7 @@ application:
 viewer:
   # Files directory path
   # Absolute or relative path to files directory
-  filesDirectory: /App_Data/
+  filesDirectory: ''
   # Fonts path
   # Absolute path to custom fonts directory
   fontsDirectory: ''
