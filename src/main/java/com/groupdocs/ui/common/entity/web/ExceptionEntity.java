@@ -9,6 +9,14 @@ public class ExceptionEntity {
     private String message;
     private Exception exception;
 
+    public ExceptionEntity() {
+    }
+
+    public ExceptionEntity(String message, Exception exception) {
+        this.message = message;
+        this.exception = exception;
+    }
+
     /**
      * Get exception message
      * @return message

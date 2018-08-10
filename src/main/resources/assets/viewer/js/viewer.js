@@ -3,7 +3,7 @@
  * Copyright (c) 2001-2018 Aspose Pty Ltd
  * Licensed under MIT
  * @author Aspose Pty Ltd
- * @version 1.0.0
+ * @version 1.1.0
  */
 
  /*
@@ -253,15 +253,15 @@ NAV BAR CONTROLS
 					if(prevPage){
 						// load previous page
 						// to set correct page size we use global array documentData which contains all info about current document
-						appendHtmlContent(currentPageNumber, documentGuid, '', documentData[currentPageNumber - 1].Width, documentData[currentPageNumber - 1].Height);
+						appendHtmlContent(currentPageNumber, documentGuid, '', documentData[currentPageNumber - 1].width, documentData[currentPageNumber - 1].height);
 					} else {
 						// load next page
-						appendHtmlContent(currentPageNumber + 1, documentGuid, '', documentData[currentPageNumber].Width, documentData[currentPageNumber].Height);
+						appendHtmlContent(currentPageNumber + 1, documentGuid, '', documentData[currentPageNumber].width, documentData[currentPageNumber].height);
 					}
 				} else {
 					// load last page if to jump to it via last page button
-					appendHtmlContent(currentPageNumber, documentGuid, '', documentData[currentPageNumber - 1].Width, documentData[currentPageNumber - 1].Height);
-					appendHtmlContent(currentPageNumber - 1, documentGuid, '', documentData[currentPageNumber - 2].Width, documentData[currentPageNumber - 2].Height);
+					appendHtmlContent(currentPageNumber, documentGuid, '', documentData[currentPageNumber - 1].width, documentData[currentPageNumber - 1].height);
+					appendHtmlContent(currentPageNumber - 1, documentGuid, '', documentData[currentPageNumber - 2].width, documentData[currentPageNumber - 2].height);
 				}
 			}
 		}
@@ -305,14 +305,14 @@ NAV BAR CONTROLS
 					// if scroll down load next page
 					if(scrollDown){
 						if(pagePosition + 1 <= lastPageNumber){
-							appendHtmlContent(pagePosition + 1, documentGuid, '', documentData[pagePosition].Width, documentData[pagePosition].Height);
+							appendHtmlContent(pagePosition + 1, documentGuid, '', documentData[pagePosition].width, documentData[pagePosition].height);
 						} else if(pagePosition == lastPageNumber){
-							appendHtmlContent(pagePosition, documentGuid, '', documentData[pagePosition - 1].Width, documentData[pagePosition - 1].height);
+							appendHtmlContent(pagePosition, documentGuid, '', documentData[pagePosition - 1].width, documentData[pagePosition - 1].height);
 						}
 					} else {
 						// if scroll up load previous page
 						if(currentPageNumber - 1 >= 1){
-							appendHtmlContent(currentPageNumber - 1, documentGuid, '', documentData[pagePosition - 1].Width, documentData[pagePosition - 1].Height);
+							appendHtmlContent(currentPageNumber - 1, documentGuid, '', documentData[pagePosition - 1].width, documentData[pagePosition - 1].height);
 						}
 					}
 				}
@@ -426,9 +426,15 @@ NAV BAR CONTROLS
 		var page = parseInt($(this).attr('id').split('-')[3]);
 		var pagesAttr = $('#gd-page-num').text().split('/');
 		// get last page number
-    	var lastPageNumber = parseInt(pagesAttr[1]);
-		appendHtmlContent(page, documentGuid, "", documentData[page - 1].Width, documentData[page - 1].Height);
-		appendHtmlContent(page + 1, documentGuid, "", documentData[page].Width, documentData[page].Height);
+		var lastPageNumber = parseInt(pagesAttr[1]);
+
+		if(page == lastPageNumber){
+		    appendHtmlContent(page, documentGuid, "", documentData[page - 2].width, documentData[page - 2].height);
+		    appendHtmlContent(page, documentGuid, "", documentData[page - 1].width, documentData[page - 1].height);
+		} else {
+		    appendHtmlContent(page, documentGuid, "", documentData[page - 1].width, documentData[page - 1].height);
+		    appendHtmlContent(page + 1, documentGuid, "", documentData[page].width, documentData[page].height);
+		}
 		// set navigation to current page
 		setNavigationPageValues(page, lastPageNumber);
 		scrollToPage(page);
@@ -772,9 +778,9 @@ function generatePagesTemplate(data, totalPageNumber, prefix){
 		// loop though pages
 		$.each(data, function(index, elem){
 			// set document description
-			var pageNumber = elem.Number;
-			var pageWidth = elem.Width;
-			var pageHeight = elem.Height;
+			var pageNumber = elem.number;
+			var pageWidth = elem.width;
+			var pageHeight = elem.height;
 			// append empty page
 			$('#gd-' + prefix + 'panzoom').append(
 				'<div id="gd-' + prefix + 'page-' + pageNumber + '" class="gd-page" style="min-width: ' + pageWidth + 'px; min-height: ' + pageHeight + 'px;">'+
@@ -794,13 +800,13 @@ function generatePagesTemplate(data, totalPageNumber, prefix){
 			if(preloadPageCount > 0){
 				for(var i = 0; i < counter; i++){
 					// render page
-					appendHtmlContent(i + 1, documentGuid, '', data[i].Width, data[i].Height);
+					appendHtmlContent(i + 1, documentGuid, '', data[i].width, data[i].height);
 				}
 
 			} else {
 				// get all pages
 				for(var i = 0; i < totalPageNumber; i++){
-					appendHtmlContent(i + 1, documentGuid, '', data[i].Width, data[i].Height);
+					appendHtmlContent(i + 1, documentGuid, '', data[i].width, data[i].height);
 				}
 			}
 		} else {
@@ -808,7 +814,7 @@ function generatePagesTemplate(data, totalPageNumber, prefix){
 			// this is required to fix issue with thumbnails resolution
 			isPageLoaded($('#gd-page-1')).then(function(element) {
 				for(var i = 0; i < totalPageNumber; i++){
-					appendHtmlContent(i + 1, documentGuid, 'thumbnails-', data[i].Width, data[i].Height);
+					appendHtmlContent(i + 1, documentGuid, 'thumbnails-', data[i].width, data[i].height);
 				}
 			});
 		}
@@ -1238,7 +1244,7 @@ function printMessage(message){
 function scrollToPage(pageNumber){
     // get zoom value
     var zoomValue = $('#gd-panzoom').css('zoom');
-    if(zoomValue == 'undefined'){
+    if(typeof zoomValue == 'undefined'){
 		zoomValue = 100;
     }else{
 		zoomValue = zoomValue * 100;

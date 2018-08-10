@@ -1,19 +1,20 @@
 package com.groupdocs.ui.viewer.resources;
 
 import com.groupdocs.ui.common.config.GlobalConfiguration;
-import com.groupdocs.ui.common.entity.web.ExceptionEntity;
-import com.groupdocs.ui.common.entity.web.FileDescriptionEntity;
-import com.groupdocs.ui.common.entity.web.MediaType;
-import com.groupdocs.ui.common.entity.web.LoadedPageEntity;
-import com.groupdocs.ui.common.entity.web.UploadedDocumentEntity;
-import com.groupdocs.ui.viewer.entity.web.RotatedPageEntity;
+import com.groupdocs.ui.common.entity.web.*;
+import com.groupdocs.ui.common.exception.TotalGroupDocsException;
 import com.groupdocs.ui.common.resources.Resources;
+import com.groupdocs.ui.viewer.entity.web.RotatedPageEntity;
+import com.groupdocs.ui.viewer.model.web.FileTreeRequest;
+import com.groupdocs.ui.viewer.model.web.LoadDocumentPageRequest;
+import com.groupdocs.ui.viewer.model.web.LoadDocumentRequest;
+import com.groupdocs.ui.viewer.model.web.RotateDocumentPagesRequest;
 import com.groupdocs.ui.viewer.views.Viewer;
-import com.google.gson.Gson;
 import com.groupdocs.viewer.config.ViewerConfig;
 import com.groupdocs.viewer.converter.options.HtmlOptions;
 import com.groupdocs.viewer.converter.options.ImageOptions;
 import com.groupdocs.viewer.domain.FileDescription;
+import com.groupdocs.viewer.domain.PageData;
 import com.groupdocs.viewer.domain.containers.DocumentInfoContainer;
 import com.groupdocs.viewer.domain.containers.FileListContainer;
 import com.groupdocs.viewer.domain.options.DocumentInfoOptions;
@@ -26,32 +27,22 @@ import com.groupdocs.viewer.handler.ViewerImageHandler;
 import com.groupdocs.viewer.licensing.License;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.eclipse.jetty.server.Request;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.apache.commons.lang3.StringUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
-import javax.servlet.MultipartConfigElement;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.UnknownHostException;
+import java.io.*;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
 /**
  * Viewer Resources
@@ -75,7 +66,7 @@ public class ViewerResources extends Resources {
         // create viewer application configuration
         ViewerConfig config = new ViewerConfig();
         config.setStoragePath(globalConfiguration.getViewer().getFilesDirectory());
-        config.setUseCache(true);
+        config.setUseCache(false);
         config.getFontDirectories().add(globalConfiguration.getViewer().getFontsDirectory());
 
         // set GroupDocs license
@@ -101,18 +92,16 @@ public class ViewerResources extends Resources {
 
     /**
      * Get files and directories
-     * @param request
-     * @param response
+     * @param fileTreeRequest request's object with specified path
      * @return files and directories list
      */
     @POST
     @Path(value = "/loadFileTree")
-    public Object loadFileTree(@Context HttpServletRequest request, @Context HttpServletResponse response){
-        // set response content type
-        setResponseContentType(response, MediaType.APPLICATION_JSON);
-        // get request body
-        String requestBody = getRequestBody(request);
-        String relDirPath = getJsonString(requestBody, "path");
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public List<FileDescriptionEntity> loadFileTree(FileTreeRequest fileTreeRequest){
+
+        String relDirPath = fileTreeRequest.getPath();
         // get file list from storage path
         FileListOptions fileListOptions = new FileListOptions(relDirPath);
         // get temp directory name
@@ -120,7 +109,7 @@ public class ViewerResources extends Resources {
         try{
             FileListContainer fileListContainer = viewerImageHandler.getFileList(fileListOptions);
 
-            ArrayList<FileDescriptionEntity> fileList = new ArrayList<>();
+            List<FileDescriptionEntity> fileList = new ArrayList<>();
             // parse files/folders list
             for(FileDescription fd : fileListContainer.getFiles()){
                 FileDescriptionEntity fileDescription = new FileDescriptionEntity();
@@ -142,31 +131,28 @@ public class ViewerResources extends Resources {
                 // add object to array list
                 fileList.add(fileDescription);
             }
-            return objectToJson(fileList);
+            return fileList;
         }catch (Exception ex){
-            return generateException(response, ex);
+            throw new TotalGroupDocsException(ex.getMessage(), ex);
         }
     }
 
     /**
      * Get document description
-     * @param request
-     * @param response
+     * @param loadDocumentRequest request's object with parameters
      * @return document description
      */
     @POST
     @Path(value = "/loadDocumentDescription")
-    public Object loadDocumentDescription(@Context HttpServletRequest request, @Context HttpServletResponse response){
-        // set response content type
-        setResponseContentType(response, MediaType.APPLICATION_JSON);
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public List<PageData> loadDocumentDescription(LoadDocumentRequest loadDocumentRequest){
         String password = "";
         try {
-            // get request body
-            String requestBody = getRequestBody(request);
             // get/set parameters
-            String documentGuid = getJsonString(requestBody, "guid");
-            boolean htmlMode = getJsonBoolean(requestBody, "htmlMode");
-            password = getJsonString(requestBody, "password");
+            String documentGuid = loadDocumentRequest.getGuid();
+            boolean htmlMode = loadDocumentRequest.getHtmlMode();
+            password = loadDocumentRequest.getPassword();
             // check if documentGuid contains path or only file name
             if(!Paths.get(documentGuid).isAbsolute()){
                 documentGuid = globalConfiguration.getViewer().getFilesDirectory() + "/" + documentGuid;
@@ -175,7 +161,7 @@ public class ViewerResources extends Resources {
             // get document info options
             DocumentInfoOptions documentInfoOptions = new DocumentInfoOptions(documentGuid);
             // set password for protected document
-            if(!password.isEmpty() && password != null) {
+            if (StringUtils.isNotEmpty(password)) {
                 documentInfoOptions.setPassword(password);
             }
             // get document info container
@@ -185,43 +171,37 @@ public class ViewerResources extends Resources {
                 documentInfoContainer = viewerImageHandler.getDocumentInfo(documentGuid, documentInfoOptions);
             }
             // return document description
-            return objectToJson(documentInfoContainer.getPages());
+            return documentInfoContainer.getPages();
         }catch (GroupDocsViewerException ex){
             // Set exception message
-            ExceptionEntity exceptionEntity = new ExceptionEntity();
+            String message = ex.getMessage();
             if(GroupDocsViewerException.class.isAssignableFrom(InvalidPasswordException.class) && password.isEmpty()) {
-                exceptionEntity.setMessage("Password Required");
+                message = "Password Required";
             }else if(GroupDocsViewerException.class.isAssignableFrom(InvalidPasswordException.class) && !password.isEmpty()){
-                exceptionEntity.setMessage("Incorrect password");
-            }else{
-                exceptionEntity.setMessage(ex.getMessage());
+                message = "Incorrect password";
             }
-            exceptionEntity.setException(ex);
-            return objectToJson(exceptionEntity);
+            throw new TotalGroupDocsException(message, ex);
         }catch (Exception ex){
-            return generateException(response, ex);
+            throw new TotalGroupDocsException(ex.getMessage(), ex);
         }
     }
 
     /**
      * Get document page
-     * @param request
-     * @param response
+     * @param loadDocumentPageRequest request's object with parameters
      * @return document page
      */
     @POST
     @Path(value = "/loadDocumentPage")
-    public Object loadDocumentPage(@Context HttpServletRequest request, @Context HttpServletResponse response){
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public LoadedPageEntity loadDocumentPage(LoadDocumentPageRequest loadDocumentPageRequest){
         try {
-            // set response content type
-            setResponseContentType(response, MediaType.APPLICATION_JSON);
-            // get request body
-            String requestBody = getRequestBody(request);
             // get/set parameters
-            String documentGuid = getJsonString(requestBody, "guid");
-            int pageNumber = getJsonInteger(requestBody, "page");
-            boolean htmlMode = getJsonBoolean(requestBody, "htmlMode");
-            String password = getJsonString(requestBody, "password");
+            String documentGuid = loadDocumentPageRequest.getGuid();
+            int pageNumber = loadDocumentPageRequest.getPage();
+            boolean htmlMode = loadDocumentPageRequest.getHtmlMode();
+            String password = loadDocumentPageRequest.getPassword();
             LoadedPageEntity loadedPage = new LoadedPageEntity();
             String angle;
             // set options
@@ -231,7 +211,7 @@ public class ViewerResources extends Resources {
                 htmlOptions.setCountPagesToRender(1);
                 htmlOptions.setResourcesEmbedded(true);
                 // set password for protected document
-                if(!password.isEmpty() && password != null) {
+                if (StringUtils.isNotEmpty(password)) {
                     htmlOptions.setPassword(password);
                 }
                 // get page HTML
@@ -243,7 +223,7 @@ public class ViewerResources extends Resources {
                 imageOptions.setPageNumber(pageNumber);
                 imageOptions.setCountPagesToRender(1);
                 // set password for protected document
-                if(!password.isEmpty()) {
+                if (StringUtils.isNotEmpty(password)) {
                     imageOptions.setPassword(password);
                 }
                 // get page image
@@ -256,36 +236,33 @@ public class ViewerResources extends Resources {
             }
             loadedPage.setAngle(angle);
             // return loaded page object
-            return objectToJson(loadedPage);
+            return loadedPage;
         }catch (Exception ex){
-            return generateException(response, ex);
+            throw new TotalGroupDocsException(ex.getMessage(), ex);
         }
     }
 
     /**
      * Rotate page(s)
-     * @param request
-     * @param response
+     * @param rotateDocumentPagesRequest request's object with parameters
      * @return rotated pages list (each obejct contains page number and rotated angle information)
      */
     @POST
     @Path(value = "/rotateDocumentPages")
-    public Object rotateDocumentPages(@Context HttpServletRequest request, @Context HttpServletResponse response){
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public List<RotatedPageEntity> rotateDocumentPages(RotateDocumentPagesRequest rotateDocumentPagesRequest){
         try {
-            // set response content type
-            setResponseContentType(response, MediaType.APPLICATION_JSON);
-            // get request body
-            String requestBody = getRequestBody(request);
             // get/set parameters
-            String documentGuid = getJsonString(requestBody, "guid");
-            int angle =  Integer.parseInt(getJsonString(requestBody, "angle"));
-            JSONArray pages = new JSONObject(requestBody).getJSONArray("pages");
-            boolean htmlMode = getJsonBoolean(requestBody, "htmlMode");
-            String password = getJsonString(requestBody, "password");
+            String documentGuid = rotateDocumentPagesRequest.getGuid();
+            int angle =  rotateDocumentPagesRequest.getAngle();
+            List<Integer> pages = rotateDocumentPagesRequest.getPages();
+            boolean htmlMode = rotateDocumentPagesRequest.getHtmlMode();
+            String password = rotateDocumentPagesRequest.getPassword();
             // a list of the rotated pages info
-            ArrayList<RotatedPageEntity> rotatedPages = new ArrayList<>();
+            List<RotatedPageEntity> rotatedPages = new ArrayList<>();
             // rotate pages
-            for(int i = 0; i < pages.length(); i++) {
+            for(int i = 0; i < pages.size(); i++) {
                 // prepare rotated page info object
                 RotatedPageEntity rotatedPage = new RotatedPageEntity();
                 int pageNumber = Integer.parseInt(pages.get(i).toString());
@@ -293,7 +270,7 @@ public class ViewerResources extends Resources {
                 // perform page rotation
                 String resultAngle;
                 // set password for protected document
-                if(!password.isEmpty() && password != null) {
+                if (StringUtils.isNotEmpty(password)) {
                     rotateOptions.setPassword(password);
                 }
                 if(htmlMode) {
@@ -310,27 +287,24 @@ public class ViewerResources extends Resources {
                 // add rotated page object into resulting list
                 rotatedPages.add(rotatedPage);
             }
-            return new Gson().toJson(rotatedPages);
+            return rotatedPages;
         }catch (Exception ex){
-            return generateException(response, ex);
+            throw new TotalGroupDocsException(ex.getMessage(), ex);
         }
     }
 
     /**
      * Download document
-     * @param request
+     * @param documentGuid path to document parameter
      * @param response
      */
     @GET
     @Path(value = "/downloadDocument")
-    public Object downloadDocument(@Context HttpServletRequest request, @Context HttpServletResponse response) throws IOException {
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public void downloadDocument(@QueryParam("path") String documentGuid, @Context HttpServletResponse response) throws IOException {
         int count;
         byte[] buff = new byte[16 * 1024];
         OutputStream out = response.getOutputStream();
-        // set response content type
-        setResponseContentType(response, MediaType.APPLICATION_OCTET_STREAM);
-        // get document path
-        String documentGuid = request.getParameter("path");
         String fileName = new File(documentGuid).getName();
         // set response content disposition
         response.setHeader("Content-disposition", "attachment; filename=" + fileName);
@@ -343,9 +317,8 @@ public class ViewerResources extends Resources {
             while ((count = inputStream.read(buff)) != -1) {
                 outStream.write(buff, 0, count);
             }
-            return outStream;
         } catch (Exception ex){
-            return generateException(response, ex);
+            throw new TotalGroupDocsException(ex.getMessage(), ex);
         } finally {
             // close streams
             if (inputStream != null)
@@ -357,31 +330,27 @@ public class ViewerResources extends Resources {
 
     /**
      * Upload document
-     * @param request
-     * @param response
+     * @param inputStream file content
+     * @param fileDetail file description
+     * @param documentUrl url for document
+     * @param rewrite flag for rewriting file
      * @return uploaded document object (the object contains uploaded document guid)
      */
     @POST
     @Path(value = "/uploadDocument")
-    public Object uploadDocument(@Context HttpServletRequest request, @Context HttpServletResponse response) {
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public UploadedDocumentEntity uploadDocument(@FormDataParam("file") InputStream inputStream,
+                                 @FormDataParam("file") FormDataContentDisposition fileDetail,
+                                 @FormDataParam("url") String documentUrl,
+                                 @FormDataParam("rewrite") Boolean rewrite) {
         try {
-            // set multipart configuration
-            MultipartConfigElement multipartConfigElement = new MultipartConfigElement((String) null);
-            request.setAttribute(Request.__MULTIPART_CONFIG_ELEMENT, multipartConfigElement);
-            // set response content type
-            setResponseContentType(response, MediaType.APPLICATION_JSON);
-            // get the file chosen by the user
-            Part filePart = request.getPart("file");
-            // get document URL
-            String documentUrl = request.getParameter("url");
-            // get rewrite mode
-            boolean rewrite = Boolean.parseBoolean(request.getParameter("rewrite"));
             InputStream uploadedInputStream = null;
             String fileName;
             if(documentUrl.isEmpty() || documentUrl == null) {
                 // get the InputStream to store the file
-                uploadedInputStream = filePart.getInputStream();
-                fileName = filePart.getSubmittedFileName();
+                uploadedInputStream = inputStream;
+                fileName = fileDetail.getFileName();
             } else {
                 // get the InputStream from the URL
                 URL url =  new URL(documentUrl);
@@ -406,9 +375,9 @@ public class ViewerResources extends Resources {
             }
             UploadedDocumentEntity uploadedDocument = new UploadedDocumentEntity();
             uploadedDocument.setGuid(documentStoragePath + "/" + fileName);
-            return objectToJson(uploadedDocument);
+            return uploadedDocument;
         }catch(Exception ex){
-            return generateException(response, ex);
+            throw new TotalGroupDocsException(ex.getMessage(), ex);
         }
     }
 }

@@ -9,7 +9,7 @@ Header, modal header, modal footer buttons
 Header logo
 */
 #gd-header-logo{
-	background-image: url('/assets/viewer/images/logo.png');
+	background-image: url('../images/logo.png');
 	background-color: #F54B51;
 }
 /*
