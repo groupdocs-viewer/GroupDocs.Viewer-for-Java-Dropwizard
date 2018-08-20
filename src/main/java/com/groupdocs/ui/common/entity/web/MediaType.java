@@ -5,6 +5,7 @@ package com.groupdocs.ui.common.entity.web;
  *
  * @author Aspose Pty Ltd
  */
+@Deprecated
 public class MediaType {
     public static final String APPLICATION_ATOM_XML = "application/atom+xml";
     public static final String APPLICATION_FONT_TTF = "application/font-ttf";

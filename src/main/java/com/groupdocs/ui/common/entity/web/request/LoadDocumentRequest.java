@@ -1,4 +1,4 @@
-package com.groupdocs.ui.viewer.model.web;
+package com.groupdocs.ui.common.entity.web.request;
 
 public class LoadDocumentRequest {
 

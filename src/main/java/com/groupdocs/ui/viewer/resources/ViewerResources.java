@@ -5,9 +5,9 @@ import com.groupdocs.ui.common.entity.web.*;
 import com.groupdocs.ui.common.exception.TotalGroupDocsException;
 import com.groupdocs.ui.common.resources.Resources;
 import com.groupdocs.ui.viewer.entity.web.RotatedPageEntity;
-import com.groupdocs.ui.viewer.model.web.FileTreeRequest;
-import com.groupdocs.ui.viewer.model.web.LoadDocumentPageRequest;
-import com.groupdocs.ui.viewer.model.web.LoadDocumentRequest;
+import com.groupdocs.ui.common.entity.web.request.FileTreeRequest;
+import com.groupdocs.ui.common.entity.web.request.LoadDocumentPageRequest;
+import com.groupdocs.ui.common.entity.web.request.LoadDocumentRequest;
 import com.groupdocs.ui.viewer.model.web.RotateDocumentPagesRequest;
 import com.groupdocs.ui.viewer.views.Viewer;
 import com.groupdocs.viewer.config.ViewerConfig;
@@ -43,6 +43,10 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.APPLICATION_OCTET_STREAM;
+import static javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA;
 
 /**
  * Viewer Resources
@@ -97,8 +101,8 @@ public class ViewerResources extends Resources {
      */
     @POST
     @Path(value = "/loadFileTree")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    @Consumes(APPLICATION_JSON)
     public List<FileDescriptionEntity> loadFileTree(FileTreeRequest fileTreeRequest){
 
         String relDirPath = fileTreeRequest.getPath();
@@ -144,8 +148,8 @@ public class ViewerResources extends Resources {
      */
     @POST
     @Path(value = "/loadDocumentDescription")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    @Consumes(APPLICATION_JSON)
     public List<PageData> loadDocumentDescription(LoadDocumentRequest loadDocumentRequest){
         String password = "";
         try {
@@ -193,8 +197,8 @@ public class ViewerResources extends Resources {
      */
     @POST
     @Path(value = "/loadDocumentPage")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    @Consumes(APPLICATION_JSON)
     public LoadedPageEntity loadDocumentPage(LoadDocumentPageRequest loadDocumentPageRequest){
         try {
             // get/set parameters
@@ -249,8 +253,8 @@ public class ViewerResources extends Resources {
      */
     @POST
     @Path(value = "/rotateDocumentPages")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    @Consumes(APPLICATION_JSON)
     public List<RotatedPageEntity> rotateDocumentPages(RotateDocumentPagesRequest rotateDocumentPagesRequest){
         try {
             // get/set parameters
@@ -300,7 +304,7 @@ public class ViewerResources extends Resources {
      */
     @GET
     @Path(value = "/downloadDocument")
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @Produces(APPLICATION_OCTET_STREAM)
     public void downloadDocument(@QueryParam("path") String documentGuid, @Context HttpServletResponse response) throws IOException {
         int count;
         byte[] buff = new byte[16 * 1024];
@@ -338,16 +342,16 @@ public class ViewerResources extends Resources {
      */
     @POST
     @Path(value = "/uploadDocument")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(APPLICATION_JSON)
+    @Consumes(MULTIPART_FORM_DATA)
     public UploadedDocumentEntity uploadDocument(@FormDataParam("file") InputStream inputStream,
                                  @FormDataParam("file") FormDataContentDisposition fileDetail,
                                  @FormDataParam("url") String documentUrl,
                                  @FormDataParam("rewrite") Boolean rewrite) {
+        InputStream uploadedInputStream = null;
         try {
-            InputStream uploadedInputStream = null;
             String fileName;
-            if(documentUrl.isEmpty() || documentUrl == null) {
+            if (StringUtils.isEmpty(documentUrl)) {
                 // get the InputStream to store the file
                 uploadedInputStream = inputStream;
                 fileName = fileDetail.getFileName();
@@ -360,7 +364,7 @@ public class ViewerResources extends Resources {
             // get documents storage path
             String documentStoragePath = globalConfiguration.getViewer().getFilesDirectory();
             // save the file
-            File file = new File(documentStoragePath + "/" + fileName);
+            File file = new File(documentStoragePath + File.separator + fileName);
             // check rewrite mode
             if(rewrite) {
                 // save file with rewrite if exists
@@ -374,10 +378,16 @@ public class ViewerResources extends Resources {
                 Files.copy(uploadedInputStream, file.toPath());
             }
             UploadedDocumentEntity uploadedDocument = new UploadedDocumentEntity();
-            uploadedDocument.setGuid(documentStoragePath + "/" + fileName);
+            uploadedDocument.setGuid(documentStoragePath + File.separator + fileName);
             return uploadedDocument;
-        }catch(Exception ex){
+        } catch(Exception ex) {
             throw new TotalGroupDocsException(ex.getMessage(), ex);
+        } finally {
+            try {
+                uploadedInputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
