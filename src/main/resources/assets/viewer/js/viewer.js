@@ -718,7 +718,7 @@ function loadFileTree(dir) {
 		  // hide loading spinner
           $('#gd-modal-spinner').hide();
 		  // open error popup
-          printMessage(returnedData.message);
+          printMessage(err.message);
 		}
     });
 }
@@ -763,7 +763,7 @@ function loadDocument(callback){
 			var err = eval("(" + xhr.responseText + ")");
 			console.log(err.Message);
 			// open error popup
-            printMessage(returnedData.message);
+            printMessage(err.message);
 		}
 	}).done(function(data){
 		// return POST data
@@ -988,7 +988,7 @@ function appendHtmlContent(pageNumber, documentName, prefix, width, height){
 		        var err = eval("(" + xhr.responseText + ")");
 		        console.log(err.Message);
 		        // open error popup
-                printMessage(htmlData.error);
+                printMessage(err.error);
 		    }
 		});
     }
@@ -1328,7 +1328,7 @@ function rotatePages(angle){
 		    var err = eval("(" + xhr.responseText + ")");
 		    console.log(err.Message);
 		    // open error popup
-            printMessage(returnedData.message);
+            printMessage(err.message);
 		}
     });
 }
@@ -1493,7 +1493,7 @@ function uploadDocument(file, index, url = ''){
 		    var err = eval("(" + xhr.responseText + ")");
 		    console.log(err.Message);
 		    // open error popup
-            printMessage(returnedData.message);
+            printMessage(err.message);
 		}
     });
 }
