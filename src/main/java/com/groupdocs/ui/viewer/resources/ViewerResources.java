@@ -1,13 +1,15 @@
 package com.groupdocs.ui.viewer.resources;
 
 import com.groupdocs.ui.common.config.GlobalConfiguration;
-import com.groupdocs.ui.common.entity.web.*;
-import com.groupdocs.ui.common.exception.TotalGroupDocsException;
-import com.groupdocs.ui.common.resources.Resources;
-import com.groupdocs.ui.viewer.entity.web.RotatedPageEntity;
+import com.groupdocs.ui.common.entity.web.FileDescriptionEntity;
+import com.groupdocs.ui.common.entity.web.LoadedPageEntity;
+import com.groupdocs.ui.common.entity.web.UploadedDocumentEntity;
 import com.groupdocs.ui.common.entity.web.request.FileTreeRequest;
 import com.groupdocs.ui.common.entity.web.request.LoadDocumentPageRequest;
 import com.groupdocs.ui.common.entity.web.request.LoadDocumentRequest;
+import com.groupdocs.ui.common.exception.TotalGroupDocsException;
+import com.groupdocs.ui.common.resources.Resources;
+import com.groupdocs.ui.viewer.entity.web.RotatedPageEntity;
 import com.groupdocs.ui.viewer.model.web.RotateDocumentPagesRequest;
 import com.groupdocs.ui.viewer.views.Viewer;
 import com.groupdocs.viewer.config.ViewerConfig;
@@ -25,7 +27,6 @@ import com.groupdocs.viewer.exception.InvalidPasswordException;
 import com.groupdocs.viewer.handler.ViewerHtmlHandler;
 import com.groupdocs.viewer.handler.ViewerImageHandler;
 import com.groupdocs.viewer.licensing.License;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -34,19 +35,17 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
-import java.io.*;
-import java.net.URL;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.UnknownHostException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.MediaType.APPLICATION_OCTET_STREAM;
-import static javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA;
+import static javax.ws.rs.core.MediaType.*;
 
 /**
  * Viewer Resources
@@ -306,30 +305,7 @@ public class ViewerResources extends Resources {
     @Path(value = "/downloadDocument")
     @Produces(APPLICATION_OCTET_STREAM)
     public void downloadDocument(@QueryParam("path") String documentGuid, @Context HttpServletResponse response) throws IOException {
-        int count;
-        byte[] buff = new byte[16 * 1024];
-        OutputStream out = response.getOutputStream();
-        String fileName = new File(documentGuid).getName();
-        // set response content disposition
-        response.setHeader("Content-disposition", "attachment; filename=" + fileName);
-        BufferedOutputStream outStream = null;
-        BufferedInputStream inputStream = null;
-        try {
-            // download the document
-            inputStream = new BufferedInputStream(new FileInputStream(documentGuid));
-            outStream = new BufferedOutputStream(out);
-            while ((count = inputStream.read(buff)) != -1) {
-                outStream.write(buff, 0, count);
-            }
-        } catch (Exception ex){
-            throw new TotalGroupDocsException(ex.getMessage(), ex);
-        } finally {
-            // close streams
-            if (inputStream != null)
-                inputStream.close();
-            if (outStream != null)
-                outStream.close();
-        }
+        downloadFile(response, documentGuid);
     }
 
     /**
@@ -348,46 +324,16 @@ public class ViewerResources extends Resources {
                                  @FormDataParam("file") FormDataContentDisposition fileDetail,
                                  @FormDataParam("url") String documentUrl,
                                  @FormDataParam("rewrite") Boolean rewrite) {
-        InputStream uploadedInputStream = null;
-        try {
-            String fileName;
-            if (StringUtils.isEmpty(documentUrl)) {
-                // get the InputStream to store the file
-                uploadedInputStream = inputStream;
-                fileName = fileDetail.getFileName();
-            } else {
-                // get the InputStream from the URL
-                URL url =  new URL(documentUrl);
-                uploadedInputStream = url.openStream();
-                fileName = FilenameUtils.getName(url.getPath());
-            }
-            // get documents storage path
-            String documentStoragePath = globalConfiguration.getViewer().getFilesDirectory();
-            // save the file
-            File file = new File(documentStoragePath + File.separator + fileName);
-            // check rewrite mode
-            if(rewrite) {
-                // save file with rewrite if exists
-                Files.copy(uploadedInputStream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            } else {
-                if (file.exists()){
-                    // get file with new name
-                    file = getFreeFileName(documentStoragePath, fileName);
-                }
-                // save file with out rewriting
-                Files.copy(uploadedInputStream, file.toPath());
-            }
-            UploadedDocumentEntity uploadedDocument = new UploadedDocumentEntity();
-            uploadedDocument.setGuid(documentStoragePath + File.separator + fileName);
-            return uploadedDocument;
-        } catch(Exception ex) {
-            throw new TotalGroupDocsException(ex.getMessage(), ex);
-        } finally {
-            try {
-                uploadedInputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        // upload file
+        String pathname = uploadFile(documentUrl, inputStream, fileDetail, rewrite, null);
+        // create response
+        UploadedDocumentEntity uploadedDocument = new UploadedDocumentEntity();
+        uploadedDocument.setGuid(pathname);
+        return uploadedDocument;
+    }
+
+    @Override
+    protected String getStoragePath(Map<String, Object> params) {
+        return globalConfiguration.getViewer().getFilesDirectory();
     }
 }

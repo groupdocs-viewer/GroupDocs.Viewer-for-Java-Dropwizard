@@ -54,6 +54,8 @@ public class MainService extends Application<GlobalConfiguration> {
 
         // Initiate resources (web pages)
         environment.jersey().register(new ViewerResources(globalConfiguration));
+
+        // Add custom exception mapper
         environment.jersey().register(new TotalGroupDocsExceptionMapper());
 
         // Add dummy health check to get rid of console warnings

@@ -1,6 +1,5 @@
 package com.groupdocs.ui.common.config;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
 
