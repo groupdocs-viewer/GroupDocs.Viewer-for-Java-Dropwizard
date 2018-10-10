@@ -18,6 +18,7 @@ import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -87,7 +88,9 @@ public abstract class Resources {
                     file = getFreeFileName(documentStoragePath, fileName);
                 }
                 // save file with out rewriting
-                Files.copy(uploadedInputStream, file.toPath());
+                Path path = file.toPath();
+                Files.copy(uploadedInputStream, path);
+                pathname = path.toString();
             }
         } catch(Exception ex) {
             throw new TotalGroupDocsException(ex.getMessage(), ex);
