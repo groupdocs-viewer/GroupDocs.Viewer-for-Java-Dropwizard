@@ -68,6 +68,16 @@
             <version>17.5.0</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <version>1.1</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -122,6 +132,41 @@
                                     <mainClass>com.groupdocs.ui.common.MainService</mainClass>
                                 </transformer>
                             </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <!-- optional: you don't really need execution ids, but it looks nice in your build log. -->
+                        <id>install node and npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                        <configuration>
+                            <nodeVersion>v4.6.0</nodeVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm install</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>install</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>gulp build</id>
+                        <goals>
+                            <goal>gulp</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>build</arguments>
                         </configuration>
                     </execution>
                 </executions>
