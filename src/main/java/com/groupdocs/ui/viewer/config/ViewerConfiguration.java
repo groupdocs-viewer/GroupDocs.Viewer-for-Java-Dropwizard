@@ -49,6 +49,10 @@ public class ViewerConfiguration extends CommonConfiguration {
     @JsonProperty
     private boolean htmlMode;
 
+    @Valid
+    @JsonProperty
+    private boolean cache;
+
     public String getFilesDirectory() {
         return filesDirectory;
     }
@@ -119,5 +123,13 @@ public class ViewerConfiguration extends CommonConfiguration {
 
     public void setHtmlMode(boolean htmlMode) {
         this.htmlMode = htmlMode;
+    }
+
+    public boolean isCache() {
+        return cache;
+    }
+
+    public void setCache(boolean cache) {
+        this.cache = cache;
     }
 }
