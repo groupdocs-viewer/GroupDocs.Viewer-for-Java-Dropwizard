@@ -8,6 +8,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+import static com.groupdocs.ui.common.exception.PasswordExceptions.INCORRECT_PASSWORD;
+import static com.groupdocs.ui.common.exception.PasswordExceptions.PASSWORD_REQUIRED;
+
 /**
  * Map application's exceptions into responses
  */
@@ -17,12 +20,16 @@ public class TotalGroupDocsExceptionMapper implements ExceptionMapper<TotalGroup
     @Override
     public Response toResponse(TotalGroupDocsException exception) {
         ExceptionEntity exceptionEntity = new ExceptionEntity();
-        exceptionEntity.setMessage(exception.getMessage());
+        String message = exception.getMessage();
+        exceptionEntity.setMessage(message);
+        if (PASSWORD_REQUIRED.equals(message) || INCORRECT_PASSWORD.equals(message)) {
+            return Response.ok(exceptionEntity).build();
+        }
         if (logger.isDebugEnabled()) {
             exception.printStackTrace();
             exceptionEntity.setException(exception);
         }
-        logger.error(exception.getCause() != null? exception.getCause().getLocalizedMessage() : exception.getMessage());
+        logger.error(exception.getCause() != null? exception.getCause().getLocalizedMessage() : message);
         return Response
                 .serverError()
                 .entity(exceptionEntity)

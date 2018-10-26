@@ -50,6 +50,8 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
+import static com.groupdocs.ui.common.exception.PasswordExceptions.INCORRECT_PASSWORD;
+import static com.groupdocs.ui.common.exception.PasswordExceptions.PASSWORD_REQUIRED;
 import static javax.ws.rs.core.MediaType.*;
 
 /**
@@ -170,7 +172,7 @@ public class ViewerResources extends Resources {
             password = loadDocumentRequest.getPassword();
             // check if documentGuid contains path or only file name
             if(!Paths.get(documentGuid).isAbsolute()){
-                documentGuid = globalConfiguration.getViewer().getFilesDirectory() + "/" + documentGuid;
+                documentGuid = globalConfiguration.getViewer().getFilesDirectory() + File.separator + documentGuid;
             }
             DocumentInfoContainer documentInfoContainer;
             // get document info options
@@ -187,9 +189,9 @@ public class ViewerResources extends Resources {
             // Set exception message
             String message = ex.getMessage();
             if(GroupDocsViewerException.class.isAssignableFrom(InvalidPasswordException.class) && password.isEmpty()) {
-                message = "Password Required";
+                message = PASSWORD_REQUIRED;
             }else if(GroupDocsViewerException.class.isAssignableFrom(InvalidPasswordException.class) && !password.isEmpty()){
-                message = "Incorrect password";
+                message = INCORRECT_PASSWORD;
             }
             throw new TotalGroupDocsException(message, ex);
         }catch (Exception ex){
@@ -213,6 +215,11 @@ public class ViewerResources extends Resources {
             int pageNumber = loadDocumentPageRequest.getPage();
             String password = loadDocumentPageRequest.getPassword();
             LoadedPageEntity loadedPage = new LoadedPageEntity();
+            DocumentInfoOptions documentInfoOptions = new DocumentInfoOptions(documentGuid);
+            // set password for protected document
+            if (StringUtils.isNotEmpty(password)) {
+                documentInfoOptions.setPassword(password);
+            }
             String angle;
             // set options
             if(globalConfiguration.getViewer().isHtmlMode()) {
@@ -228,7 +235,7 @@ public class ViewerResources extends Resources {
                 PageHtml page = (PageHtml) viewerHandler.getPages(documentGuid, htmlOptions).get(0);
                 loadedPage.setPageHtml(page.getHtmlContent());
                 // get page rotation angle
-                angle = String.valueOf(viewerHandler.getDocumentInfo(documentGuid).getPages().get(pageNumber - 1).getAngle());
+                angle = String.valueOf(viewerHandler.getDocumentInfo(documentGuid, documentInfoOptions).getPages().get(pageNumber - 1).getAngle());
             } else {
                 ImageOptions imageOptions = new ImageOptions();
                 imageOptions.setPageNumber(pageNumber);
@@ -244,7 +251,7 @@ public class ViewerResources extends Resources {
                 String encodedImage = new String(Base64.getEncoder().encode(bytes));
                 loadedPage.setPageImage(encodedImage);
                 // get page rotation angle
-                angle = String.valueOf(viewerHandler.getDocumentInfo(documentGuid).getPages().get(pageNumber - 1).getAngle());
+                angle = String.valueOf(viewerHandler.getDocumentInfo(documentGuid, documentInfoOptions).getPages().get(pageNumber - 1).getAngle());
             }
             loadedPage.setAngle(angle);
             // return loaded page object
@@ -257,7 +264,7 @@ public class ViewerResources extends Resources {
     /**
      * Rotate page(s)
      * @param rotateDocumentPagesRequest request's object with parameters
-     * @return rotated pages list (each obejct contains page number and rotated angle information)
+     * @return rotated pages list (each object contains page number and rotated angle information)
      */
     @POST
     @Path(value = "/rotateDocumentPages")
@@ -270,6 +277,11 @@ public class ViewerResources extends Resources {
             int angle =  rotateDocumentPagesRequest.getAngle();
             List<Integer> pages = rotateDocumentPagesRequest.getPages();
             String password = rotateDocumentPagesRequest.getPassword();
+            DocumentInfoOptions documentInfoOptions = new DocumentInfoOptions(documentGuid);
+            // set password for protected document
+            if (StringUtils.isNotEmpty(password)) {
+                documentInfoOptions.setPassword(password);
+            }
             // a list of the rotated pages info
             List<RotatedPageEntity> rotatedPages = new ArrayList<>();
             // rotate pages
@@ -285,7 +297,7 @@ public class ViewerResources extends Resources {
                     rotateOptions.setPassword(password);
                 }
                 viewerHandler.rotatePage(documentGuid, rotateOptions);
-                resultAngle = String.valueOf(viewerHandler.getDocumentInfo(documentGuid).getPages().get(pageNumber - 1).getAngle());
+                resultAngle = String.valueOf(viewerHandler.getDocumentInfo(documentGuid, documentInfoOptions).getPages().get(pageNumber - 1).getAngle());
                 // add rotated page number
                 rotatedPage.setPageNumber(pageNumber);
                 // add rotated page angle
