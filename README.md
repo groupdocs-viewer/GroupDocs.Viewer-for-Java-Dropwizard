@@ -2,6 +2,8 @@
 # GroupDocs.Viewer for Java Dropwizard Example
 ###### version 1.9.0
 
+[![Build Status](https://travis-ci.org/groupdocs-viewer/GroupDocs.Viewer-for-Java-Dropwizard.svg?branch=master)](https://travis-ci.org/groupdocs-viewer/GroupDocs.Viewer-for-Java-Dropwizard)
+[![Maintainability](https://api.codeclimate.com/v1/badges/a0836eb386f80c572f25/maintainability)](https://codeclimate.com/github/groupdocs-viewer/GroupDocs.Viewer-for-Java-Dropwizard/maintainability)
 
 ## System Requirements
 - Java 8 (JDK 1.8)
