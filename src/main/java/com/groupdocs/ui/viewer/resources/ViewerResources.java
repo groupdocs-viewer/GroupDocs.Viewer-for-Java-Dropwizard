@@ -77,7 +77,11 @@ public class ViewerResources extends Resources {
 
         // create viewer application configuration
         ViewerConfig config = new ViewerConfig();
-        config.setStoragePath(globalConfiguration.getViewer().getFilesDirectory());
+        String filesDirectory = globalConfiguration.getViewer().getFilesDirectory();
+        if (StringUtils.isNotEmpty(filesDirectory) && !filesDirectory.endsWith(File.separator)) {
+            filesDirectory = filesDirectory + File.separator;
+        }
+        config.setStoragePath(filesDirectory);
         config.setUseCache(globalConfiguration.getViewer().isCache());
         config.getFontDirectories().add(globalConfiguration.getViewer().getFontsDirectory());
 

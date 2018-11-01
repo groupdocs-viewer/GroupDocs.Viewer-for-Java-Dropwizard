@@ -1,6 +1,6 @@
 ![Alt text](https://raw.githubusercontent.com/groupdocs-viewer/GroupDocs.Viewer-for-Java-Dropwizard/gh-pages/images/banner.png "GroupDocs.Viewer")
 # GroupDocs.Viewer for Java Dropwizard Example
-###### version 1.9.0
+###### version 1.10.0
 
 
 ## System Requirements
