@@ -33,6 +33,7 @@ public class ViewerResourcesTest {
 
 
         assertThat(response.getStatus()).isEqualTo(200);
+        client.close();
     }
 
     void loadFileTree() {
