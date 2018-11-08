@@ -6,6 +6,7 @@ import com.groupdocs.ui.common.config.GlobalConfiguration;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.testing.ResourceHelpers;
 import io.dropwizard.testing.junit.DropwizardAppRule;
+import org.glassfish.jersey.client.ClientProperties;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -26,10 +27,13 @@ public class ViewerResourcesTest {
     @Test
     public void getView() {
         Client client = new JerseyClientBuilder(RULE.getEnvironment()).build("test client");
+        client.property(ClientProperties.CONNECT_TIMEOUT, 1000);
+        client.property(ClientProperties.READ_TIMEOUT,    1000);
         Response response = client.target(
                 String.format("http://localhost:%d/viewer", RULE.getLocalPort()))
                 .request()
-                .get();
+                .get()
+                ;
 
 
         assertThat(response.getStatus()).isEqualTo(200);
