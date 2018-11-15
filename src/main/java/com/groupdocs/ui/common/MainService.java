@@ -1,20 +1,27 @@
 package com.groupdocs.ui.common;
 
+import com.google.common.collect.Sets;
 import com.groupdocs.ui.common.config.GlobalConfiguration;
 import com.groupdocs.ui.common.exception.TotalGroupDocsExceptionMapper;
 import com.groupdocs.ui.common.health.TemplateHealthCheck;
 import com.groupdocs.ui.viewer.resources.ViewerResources;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
+import io.dropwizard.configuration.ResourceConfigurationSourceProvider;
 import io.dropwizard.forms.MultiPartBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.views.ViewBundle;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
+import java.io.File;
 import java.util.EnumSet;
+import java.util.HashSet;
 
 /**
  * Main class
@@ -24,13 +31,47 @@ import java.util.EnumSet;
  */
 
 public class MainService extends Application<GlobalConfiguration> {
-    
-    public static void main( String[] args ) throws Exception{
-        new MainService().run(args);
+    private static final Logger logger = LoggerFactory.getLogger(MainService.class);
+
+    private static final String SERVER_COMMAND = "server";
+    private static final String CHECK_COMMAND = "check";
+    private static final HashSet<String> COMMANDS = Sets.newHashSet(SERVER_COMMAND, CHECK_COMMAND);
+    private static final String DEFAULT_CONFIGURATION_FILE = "defaultConfiguration.yml";
+    private static final String EXTERNAL_CONFIGURATION_FILE = "configuration.yml";
+
+    private boolean defaultConfiguration;
+
+    public MainService() {
+        super();
+        defaultConfiguration = false;
+    }
+
+    public MainService(boolean defaultConfiguration) {
+        super();
+        this.defaultConfiguration = defaultConfiguration;
+    }
+
+    public static void main(String[] args) throws Exception {
+        if (args == null || args.length == 0 || (args.length == 1 && !COMMANDS.contains(args[0]))) {
+            logger.info("Command is not specified. Use default: server.");
+            args = args.length == 1 ? new String[]{SERVER_COMMAND, args[0]} : new String[]{SERVER_COMMAND, EXTERNAL_CONFIGURATION_FILE};
+        }
+        if (args.length > 1 && StringUtils.isNotEmpty(args[1]) && new File(args[1]).exists()) {
+            new MainService(false).run(args);
+        } else {
+            logger.info("Can not find external configuration file. Use default.");
+            String[] newArgs = new String[]{args[0], DEFAULT_CONFIGURATION_FILE};
+            new MainService(true).run(newArgs);
+        }
     }
 
     @Override
     public void initialize(Bootstrap<GlobalConfiguration> bootstrap) {
+        if (defaultConfiguration) {
+            bootstrap.setConfigurationSourceProvider(new ResourceConfigurationSourceProvider());
+        } else {
+            bootstrap.setConfigurationSourceProvider(new MergedConfigurationSourceProvider(DEFAULT_CONFIGURATION_FILE));
+        }
         // add assets bundle in order to get resources from assets directory
         bootstrap.addBundle(new AssetsBundle());
         // init view bundle
