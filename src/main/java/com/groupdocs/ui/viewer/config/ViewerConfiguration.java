@@ -1,17 +1,20 @@
 package com.groupdocs.ui.viewer.config;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.groupdocs.ui.common.config.CommonConfiguration;
+import io.dropwizard.Configuration;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.Valid;
+
+import static com.groupdocs.ui.common.config.DefaultDirectories.defaultViewerDirectory;
+import static com.groupdocs.ui.common.config.DefaultDirectories.relativePathToAbsolute;
 
 /**
  * ViewerConfiguration
  *
  * @author Aspose Pty Ltd
  */
-public class ViewerConfiguration extends CommonConfiguration {
+public class ViewerConfiguration extends Configuration {
 
     @Valid
     @JsonProperty
@@ -58,7 +61,7 @@ public class ViewerConfiguration extends CommonConfiguration {
     }
 
     public void setFilesDirectory(String filesDirectory) {
-        this.filesDirectory = filesDirectory;
+        this.filesDirectory = StringUtils.isEmpty(filesDirectory) ? defaultViewerDirectory() : relativePathToAbsolute(filesDirectory);
     }
 
     public String getFontsDirectory() {

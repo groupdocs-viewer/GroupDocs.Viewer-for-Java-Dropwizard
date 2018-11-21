@@ -12,7 +12,7 @@ import javax.validation.Valid;
  *
  * @author Aspose Pty Ltd
  */
-public class GlobalConfiguration extends Configuration{
+public class GlobalConfiguration extends Configuration {
 
     @Valid
     @JsonProperty
@@ -57,8 +57,8 @@ public class GlobalConfiguration extends Configuration{
     }
 
     /**
-     * Get signature configuration
-     * @return signature configuration
+     * Get common configuration
+     * @return common configuration
      */
     public CommonConfiguration getCommon() {
         return common;
