@@ -1,19 +1,32 @@
 package com.groupdocs.ui.common.config;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
 public class DefaultDirectories {
-    public static final String LIC = "GroupDocs.Viewer.Java.lic";
+    private static final Logger logger = LoggerFactory.getLogger(DefaultDirectories.class);
+
+    public static final String LIC = ".lic";
     public static final String LICENSES = "Licenses";
     public static final String DOCUMENT_SAMPLES = "DocumentSamples";
 
     public static String defaultLicenseDirectory() {
-        Path defaultLic = FileSystems.getDefault().getPath(LICENSES + File.separator + LIC).toAbsolutePath();
-        return defaultLic.toString();
+        Path defaultLicFolder = FileSystems.getDefault().getPath(LICENSES).toAbsolutePath();
+        File licFolder = defaultLicFolder.toFile();
+        if (licFolder.exists()) {
+            Path defaultLicFile = getDefaultLicFile(licFolder);
+            if (defaultLicFile != null) {
+                return defaultLicFile.toString();
+            }
+        }
+        licFolder.mkdirs();
+        logger.info("License file path is incorrect, application launched in trial mode");
+        return "";
     }
 
     public static String defaultViewerDirectory() {
@@ -50,5 +63,14 @@ public class DefaultDirectories {
         Path absolutePath = FileSystems.getDefault().getPath(path).toAbsolutePath();
         makeDirs(absolutePath.toFile());
         return absolutePath.toString();
+    }
+
+    public static Path getDefaultLicFile(File licFolder) {
+        for (File file : licFolder.listFiles()) {
+            if (file.getName().endsWith(LIC)) {
+                return FileSystems.getDefault().getPath(LICENSES + File.separator + file.getName()).toAbsolutePath();
+            }
+        }
+        return null;
     }
 }
