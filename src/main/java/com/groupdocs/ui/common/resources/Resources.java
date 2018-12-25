@@ -160,7 +160,7 @@ public abstract class Resources {
         globalConfiguration.getServer().setHttpPort(((HttpConnectorFactory) connector).getPort());
 
         // set host address
-        globalConfiguration.getServer().setHostAddress(InetAddress.getLocalHost().getHostAddress());
+        globalConfiguration.getServer().setHostAddress(((HttpConnectorFactory) connector).getBindHost());
 
     }
 
