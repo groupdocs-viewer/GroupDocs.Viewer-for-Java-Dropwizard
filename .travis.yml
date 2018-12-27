@@ -9,14 +9,17 @@ jdk:
 - openjdk11
 services:
   - docker
-before_script:
-- curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-- chmod +x ./cc-test-reporter
-- ./cc-test-reporter before-build
-after_script:
-- ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 jobs:
   include:
+  - stage: Coverage
+    jdk: oraclejdk8
+    script:
+    - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+    - chmod +x ./cc-test-reporter
+    - ./cc-test-reporter before-build
+    - mvn clean package
+    - JACOCO_SOURCE_PATH=src/main/java ./cc-test-reporter format-coverage target/site/jacoco/jacoco.xml --input-type jacoco
+    - ./cc-test-reporter upload-coverage
   - stage: Tag Release
     if: type = push AND branch = master AND commit_message !~ /^Travis bot released/
     install: skip
