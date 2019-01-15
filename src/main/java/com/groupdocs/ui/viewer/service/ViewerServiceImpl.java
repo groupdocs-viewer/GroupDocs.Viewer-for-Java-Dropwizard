@@ -134,11 +134,7 @@ public class ViewerServiceImpl implements ViewerService {
         String documentGuid = getGuid(loadDocumentRequest.getGuid());
         String password = loadDocumentRequest.getPassword();
         // get document info options
-        DocumentInfoOptions documentInfoOptions = new DocumentInfoOptions(documentGuid);
-        // set password for protected document
-        if (StringUtils.isNotEmpty(password)) {
-            documentInfoOptions.setPassword(password);
-        }
+        DocumentInfoOptions documentInfoOptions = getDocumentInfoOptions(documentGuid, password);
         try {
             // get document info container
             DocumentInfoContainer documentInfoContainer = viewerHandler.getDocumentInfo(documentGuid, documentInfoOptions);
@@ -181,11 +177,7 @@ public class ViewerServiceImpl implements ViewerService {
             String documentGuid = loadDocumentPageRequest.getGuid();
             int pageNumber = loadDocumentPageRequest.getPage();
             String password = loadDocumentPageRequest.getPassword();
-            DocumentInfoOptions documentInfoOptions = new DocumentInfoOptions(documentGuid);
-            // set password for protected document
-            if (StringUtils.isNotEmpty(password)) {
-                documentInfoOptions.setPassword(password);
-            }
+            DocumentInfoOptions documentInfoOptions = getDocumentInfoOptions(documentGuid, password);
             PageData pageData = viewerHandler.getDocumentInfo(documentGuid, documentInfoOptions).getPages().get(pageNumber - 1);
             PageDescriptionEntity loadedPage = getPageDescriptionEntity(pageData);
             // set options
@@ -214,11 +206,7 @@ public class ViewerServiceImpl implements ViewerService {
             String documentGuid = rotateDocumentPagesRequest.getGuid();
             List<Integer> pages = rotateDocumentPagesRequest.getPages();
             String password = rotateDocumentPagesRequest.getPassword();
-            DocumentInfoOptions documentInfoOptions = new DocumentInfoOptions(documentGuid);
-            // set password for protected document
-            if (StringUtils.isNotEmpty(password)) {
-                documentInfoOptions.setPassword(password);
-            }
+            DocumentInfoOptions documentInfoOptions = getDocumentInfoOptions(documentGuid, password);
             // a list of the rotated pages info
             List<RotatedPageEntity> rotatedPages = new ArrayList<>();
             // rotate pages
@@ -241,6 +229,15 @@ public class ViewerServiceImpl implements ViewerService {
         } catch (Exception ex) {
             throw new TotalGroupDocsException(ex.getMessage(), ex);
         }
+    }
+
+    private DocumentInfoOptions getDocumentInfoOptions(String documentGuid, String password) {
+        DocumentInfoOptions documentInfoOptions = new DocumentInfoOptions(documentGuid);
+        // set password for protected document
+        if (StringUtils.isNotEmpty(password)) {
+            documentInfoOptions.setPassword(password);
+        }
+        return documentInfoOptions;
     }
 
     protected String getExceptionMessage(String password, GroupDocsViewerException ex) {
