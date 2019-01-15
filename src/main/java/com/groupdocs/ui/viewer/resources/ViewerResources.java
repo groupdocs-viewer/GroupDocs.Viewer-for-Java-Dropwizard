@@ -1,10 +1,7 @@
 package com.groupdocs.ui.viewer.resources;
 
 import com.groupdocs.ui.common.config.GlobalConfiguration;
-import com.groupdocs.ui.common.entity.web.FileDescriptionEntity;
-import com.groupdocs.ui.common.entity.web.LoadDocumentEntity;
-import com.groupdocs.ui.common.entity.web.LoadedPageEntity;
-import com.groupdocs.ui.common.entity.web.UploadedDocumentEntity;
+import com.groupdocs.ui.common.entity.web.*;
 import com.groupdocs.ui.common.entity.web.request.FileTreeRequest;
 import com.groupdocs.ui.common.entity.web.request.LoadDocumentPageRequest;
 import com.groupdocs.ui.common.entity.web.request.LoadDocumentRequest;
@@ -99,7 +96,7 @@ public class ViewerResources extends Resources {
     @Path(value = "/loadDocumentPage")
     @Produces(APPLICATION_JSON)
     @Consumes(APPLICATION_JSON)
-    public LoadedPageEntity loadDocumentPage(LoadDocumentPageRequest loadDocumentPageRequest){
+    public PageDescriptionEntity loadDocumentPage(LoadDocumentPageRequest loadDocumentPageRequest){
         return viewerService.loadDocumentPage(loadDocumentPageRequest);
     }
 
