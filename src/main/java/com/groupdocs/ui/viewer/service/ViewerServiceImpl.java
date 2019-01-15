@@ -45,6 +45,7 @@ import java.util.List;
 
 import static com.groupdocs.ui.common.exception.PasswordExceptions.INCORRECT_PASSWORD;
 import static com.groupdocs.ui.common.exception.PasswordExceptions.PASSWORD_REQUIRED;
+import static com.groupdocs.ui.viewer.service.ViewerOptionsFactory.*;
 
 public class ViewerServiceImpl implements ViewerService {
     private static final Logger logger = LoggerFactory.getLogger(ViewerServiceImpl.class);
@@ -164,19 +165,10 @@ public class ViewerServiceImpl implements ViewerService {
     protected List<Page> getPagesData(String documentGuid, String password) throws Exception {
         List<Page> pagesData;
         if (globalConfiguration.getViewer().isHtmlMode()) {
-            HtmlOptions htmlOptions = new HtmlOptions();
-            htmlOptions.setResourcesEmbedded(true);
-            // set password for protected document
-            if (StringUtils.isNotEmpty(password)) {
-                htmlOptions.setPassword(password);
-            }
+            HtmlOptions htmlOptions = createCommonHtmlOptions(password);
             pagesData = viewerHandler.getPages(documentGuid, htmlOptions);
         } else {
-            ImageOptions imageOptions = new ImageOptions();
-            // set password for protected document
-            if (StringUtils.isNotEmpty(password)) {
-                imageOptions.setPassword(password);
-            }
+            ImageOptions imageOptions = createCommonImageOptions(password);
             pagesData = viewerHandler.getPages(documentGuid, imageOptions);
         }
         return pagesData;
@@ -198,12 +190,12 @@ public class ViewerServiceImpl implements ViewerService {
             PageDescriptionEntity loadedPage = getPageDescriptionEntity(pageData);
             // set options
             if (globalConfiguration.getViewer().isHtmlMode()) {
-                HtmlOptions htmlOptions = getHtmlOptions(pageNumber, password);
+                HtmlOptions htmlOptions = createHtmlOptions(pageNumber, password);
                 // get page HTML
                 PageHtml page = (PageHtml) viewerHandler.getPages(documentGuid, htmlOptions).get(0);
                 loadedPage.setData(page.getHtmlContent());
             } else {
-                ImageOptions imageOptions = getImageOptions(pageNumber, password);
+                ImageOptions imageOptions = createImageOptions(pageNumber, password);
                 // get page image
                 PageImage page = (PageImage) viewerHandler.getPages(documentGuid, imageOptions).get(0);
                 loadedPage.setData(getStringFromStream(page.getStream()));
@@ -260,29 +252,6 @@ public class ViewerServiceImpl implements ViewerService {
             message = INCORRECT_PASSWORD;
         }
         return message;
-    }
-
-    protected ImageOptions getImageOptions(int pageNumber, String password) {
-        ImageOptions imageOptions = new ImageOptions();
-        imageOptions.setPageNumber(pageNumber);
-        imageOptions.setCountPagesToRender(1);
-        // set password for protected document
-        if (StringUtils.isNotEmpty(password)) {
-            imageOptions.setPassword(password);
-        }
-        return imageOptions;
-    }
-
-    protected HtmlOptions getHtmlOptions(int pageNumber, String password) {
-        HtmlOptions htmlOptions = new HtmlOptions();
-        htmlOptions.setPageNumber(pageNumber);
-        htmlOptions.setCountPagesToRender(1);
-        htmlOptions.setResourcesEmbedded(true);
-        // set password for protected document
-        if (StringUtils.isNotEmpty(password)) {
-            htmlOptions.setPassword(password);
-        }
-        return htmlOptions;
     }
 
     protected RotatedPageEntity getRotatedPageEntity(int pageNumber, int resultAngle) {
