@@ -2,7 +2,7 @@ package com.groupdocs.ui.viewer.service;
 
 import com.groupdocs.ui.common.entity.web.FileDescriptionEntity;
 import com.groupdocs.ui.common.entity.web.LoadDocumentEntity;
-import com.groupdocs.ui.common.entity.web.LoadedPageEntity;
+import com.groupdocs.ui.common.entity.web.PageDescriptionEntity;
 import com.groupdocs.ui.common.entity.web.request.FileTreeRequest;
 import com.groupdocs.ui.common.entity.web.request.LoadDocumentPageRequest;
 import com.groupdocs.ui.common.entity.web.request.LoadDocumentRequest;
@@ -36,7 +36,7 @@ public interface ViewerService {
      * @param loadDocumentPageRequest request's object with parameters
      * @return document page
      */
-    LoadedPageEntity loadDocumentPage(LoadDocumentPageRequest loadDocumentPageRequest);
+    PageDescriptionEntity loadDocumentPage(LoadDocumentPageRequest loadDocumentPageRequest);
 
     /**
      * Rotate page(s)

@@ -3,7 +3,6 @@ package com.groupdocs.ui.viewer.service;
 import com.groupdocs.ui.common.config.GlobalConfiguration;
 import com.groupdocs.ui.common.entity.web.FileDescriptionEntity;
 import com.groupdocs.ui.common.entity.web.LoadDocumentEntity;
-import com.groupdocs.ui.common.entity.web.LoadedPageEntity;
 import com.groupdocs.ui.common.entity.web.PageDescriptionEntity;
 import com.groupdocs.ui.common.entity.web.request.FileTreeRequest;
 import com.groupdocs.ui.common.entity.web.request.LoadDocumentPageRequest;
@@ -15,6 +14,7 @@ import com.groupdocs.viewer.config.ViewerConfig;
 import com.groupdocs.viewer.converter.options.HtmlOptions;
 import com.groupdocs.viewer.converter.options.ImageOptions;
 import com.groupdocs.viewer.domain.FileDescription;
+import com.groupdocs.viewer.domain.Page;
 import com.groupdocs.viewer.domain.PageData;
 import com.groupdocs.viewer.domain.containers.DocumentInfoContainer;
 import com.groupdocs.viewer.domain.containers.FileListContainer;
@@ -35,13 +35,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 
 import static com.groupdocs.ui.common.exception.PasswordExceptions.INCORRECT_PASSWORD;
 import static com.groupdocs.ui.common.exception.PasswordExceptions.PASSWORD_REQUIRED;
+import static com.groupdocs.ui.viewer.service.ViewerOptionsFactory.*;
 
 public class ViewerServiceImpl implements ViewerService {
     private static final Logger logger = LoggerFactory.getLogger(ViewerServiceImpl.class);
@@ -130,15 +134,17 @@ public class ViewerServiceImpl implements ViewerService {
         String documentGuid = getGuid(loadDocumentRequest.getGuid());
         String password = loadDocumentRequest.getPassword();
         // get document info options
-        DocumentInfoOptions documentInfoOptions = new DocumentInfoOptions(documentGuid);
-        // set password for protected document
-        if (StringUtils.isNotEmpty(password)) {
-            documentInfoOptions.setPassword(password);
-        }
+        DocumentInfoOptions documentInfoOptions = getDocumentInfoOptions(documentGuid, password);
         try {
             // get document info container
             DocumentInfoContainer documentInfoContainer = viewerHandler.getDocumentInfo(documentGuid, documentInfoOptions);
-            List<PageDescriptionEntity> pages = getPageDescriptionEntities(documentInfoContainer.getPages());
+            List<Page> pagesData = Collections.EMPTY_LIST;
+
+            if (globalConfiguration.getViewer().getPreloadPageCount() == 0) {
+                pagesData = getPagesData(documentGuid, password);
+            }
+
+            List<PageDescriptionEntity> pages = getPageDescriptionEntities(documentInfoContainer.getPages(), pagesData);
 
             LoadDocumentEntity loadDocumentEntity = new LoadDocumentEntity();
             loadDocumentEntity.setGuid(loadDocumentRequest.getGuid());
@@ -152,36 +158,40 @@ public class ViewerServiceImpl implements ViewerService {
         }
     }
 
+    protected List<Page> getPagesData(String documentGuid, String password) throws Exception {
+        List<Page> pagesData;
+        if (globalConfiguration.getViewer().isHtmlMode()) {
+            HtmlOptions htmlOptions = createCommonHtmlOptions(password);
+            pagesData = viewerHandler.getPages(documentGuid, htmlOptions);
+        } else {
+            ImageOptions imageOptions = createCommonImageOptions(password);
+            pagesData = viewerHandler.getPages(documentGuid, imageOptions);
+        }
+        return pagesData;
+    }
+
     @Override
-    public LoadedPageEntity loadDocumentPage(LoadDocumentPageRequest loadDocumentPageRequest) {
+    public PageDescriptionEntity loadDocumentPage(LoadDocumentPageRequest loadDocumentPageRequest) {
         try {
             // get/set parameters
             String documentGuid = loadDocumentPageRequest.getGuid();
             int pageNumber = loadDocumentPageRequest.getPage();
             String password = loadDocumentPageRequest.getPassword();
-            LoadedPageEntity loadedPage = new LoadedPageEntity();
+            DocumentInfoOptions documentInfoOptions = getDocumentInfoOptions(documentGuid, password);
+            PageData pageData = viewerHandler.getDocumentInfo(documentGuid, documentInfoOptions).getPages().get(pageNumber - 1);
+            PageDescriptionEntity loadedPage = getPageDescriptionEntity(pageData);
             // set options
             if (globalConfiguration.getViewer().isHtmlMode()) {
-                HtmlOptions htmlOptions = getHtmlOptions(pageNumber, password);
+                HtmlOptions htmlOptions = createHtmlOptions(pageNumber, password);
                 // get page HTML
                 PageHtml page = (PageHtml) viewerHandler.getPages(documentGuid, htmlOptions).get(0);
-                loadedPage.setPageHtml(page.getHtmlContent());
+                loadedPage.setData(page.getHtmlContent());
             } else {
-                ImageOptions imageOptions = getImageOptions(pageNumber, password);
+                ImageOptions imageOptions = createImageOptions(pageNumber, password);
                 // get page image
                 PageImage page = (PageImage) viewerHandler.getPages(documentGuid, imageOptions).get(0);
-                byte[] bytes = IOUtils.toByteArray(page.getStream());
-                // encode ByteArray into String
-                loadedPage.setPageImage(new String(Base64.getEncoder().encode(bytes)));
+                loadedPage.setData(getStringFromStream(page.getStream()));
             }
-            DocumentInfoOptions documentInfoOptions = new DocumentInfoOptions(documentGuid);
-            // set password for protected document
-            if (StringUtils.isNotEmpty(password)) {
-                documentInfoOptions.setPassword(password);
-            }
-            // get page rotation angle
-            String angle = String.valueOf(viewerHandler.getDocumentInfo(documentGuid, documentInfoOptions).getPages().get(pageNumber - 1).getAngle());
-            loadedPage.setAngle(angle);
             // return loaded page object
             return loadedPage;
         } catch (Exception ex) {
@@ -196,25 +206,20 @@ public class ViewerServiceImpl implements ViewerService {
             String documentGuid = rotateDocumentPagesRequest.getGuid();
             List<Integer> pages = rotateDocumentPagesRequest.getPages();
             String password = rotateDocumentPagesRequest.getPassword();
-            DocumentInfoOptions documentInfoOptions = new DocumentInfoOptions(documentGuid);
-            // set password for protected document
-            if (StringUtils.isNotEmpty(password)) {
-                documentInfoOptions.setPassword(password);
-            }
+            DocumentInfoOptions documentInfoOptions = getDocumentInfoOptions(documentGuid, password);
             // a list of the rotated pages info
             List<RotatedPageEntity> rotatedPages = new ArrayList<>();
             // rotate pages
             for (int i = 0; i < pages.size(); i++) {
                 int pageNumber = Integer.parseInt(pages.get(i).toString());
                 RotatePageOptions rotateOptions = new RotatePageOptions(pageNumber, rotateDocumentPagesRequest.getAngle());
-                // perform page rotation
-                String resultAngle;
                 // set password for protected document
                 if (StringUtils.isNotEmpty(password)) {
                     rotateOptions.setPassword(password);
                 }
+                // perform page rotation
                 viewerHandler.rotatePage(documentGuid, rotateOptions);
-                resultAngle = String.valueOf(viewerHandler.getDocumentInfo(documentGuid, documentInfoOptions).getPages().get(pageNumber - 1).getAngle());
+                int resultAngle = viewerHandler.getDocumentInfo(documentGuid, documentInfoOptions).getPages().get(pageNumber - 1).getAngle();
                 // prepare rotated page info object
                 RotatedPageEntity rotatedPage = getRotatedPageEntity(pageNumber, resultAngle);
                 // add rotated page object into resulting list
@@ -224,6 +229,15 @@ public class ViewerServiceImpl implements ViewerService {
         } catch (Exception ex) {
             throw new TotalGroupDocsException(ex.getMessage(), ex);
         }
+    }
+
+    private DocumentInfoOptions getDocumentInfoOptions(String documentGuid, String password) {
+        DocumentInfoOptions documentInfoOptions = new DocumentInfoOptions(documentGuid);
+        // set password for protected document
+        if (StringUtils.isNotEmpty(password)) {
+            documentInfoOptions.setPassword(password);
+        }
+        return documentInfoOptions;
     }
 
     protected String getExceptionMessage(String password, GroupDocsViewerException ex) {
@@ -237,30 +251,7 @@ public class ViewerServiceImpl implements ViewerService {
         return message;
     }
 
-    protected ImageOptions getImageOptions(int pageNumber, String password) {
-        ImageOptions imageOptions = new ImageOptions();
-        imageOptions.setPageNumber(pageNumber);
-        imageOptions.setCountPagesToRender(1);
-        // set password for protected document
-        if (StringUtils.isNotEmpty(password)) {
-            imageOptions.setPassword(password);
-        }
-        return imageOptions;
-    }
-
-    protected HtmlOptions getHtmlOptions(int pageNumber, String password) {
-        HtmlOptions htmlOptions = new HtmlOptions();
-        htmlOptions.setPageNumber(pageNumber);
-        htmlOptions.setCountPagesToRender(1);
-        htmlOptions.setResourcesEmbedded(true);
-        // set password for protected document
-        if (StringUtils.isNotEmpty(password)) {
-            htmlOptions.setPassword(password);
-        }
-        return htmlOptions;
-    }
-
-    protected RotatedPageEntity getRotatedPageEntity(int pageNumber, String resultAngle) {
+    protected RotatedPageEntity getRotatedPageEntity(int pageNumber, int resultAngle) {
         RotatedPageEntity rotatedPage = new RotatedPageEntity();
         // add rotated page number
         rotatedPage.setPageNumber(pageNumber);
@@ -269,17 +260,42 @@ public class ViewerServiceImpl implements ViewerService {
         return rotatedPage;
     }
 
-    protected List<PageDescriptionEntity> getPageDescriptionEntities(List<PageData> containerPages) {
+    protected List<PageDescriptionEntity> getPageDescriptionEntities(List<PageData> containerPages, List<Page> pagesData) throws IOException {
         List<PageDescriptionEntity> pages = new ArrayList<>();
-        for (PageData page : containerPages) {
-            PageDescriptionEntity pageDescriptionEntity = new PageDescriptionEntity();
-            pageDescriptionEntity.setNumber(page.getNumber());
-            pageDescriptionEntity.setAngle(page.getAngle());
-            pageDescriptionEntity.setHeight(page.getHeight());
-            pageDescriptionEntity.setWidth(page.getWidth());
+        for (int i = 0; i < containerPages.size(); i++) {
+            PageData page = containerPages.get(i);
+            PageDescriptionEntity pageDescriptionEntity = getPageDescriptionEntity(page);
+            if (!pagesData.isEmpty()) {
+                Page pageData = pagesData.get(i);
+                pageDescriptionEntity.setData(getPageData(pageData));
+            }
             pages.add(pageDescriptionEntity);
         }
         return pages;
+    }
+
+    private String getPageData(Page pageData) throws IOException {
+        boolean htmlMode = globalConfiguration.getViewer().isHtmlMode();
+        if (htmlMode) {
+            return ((PageHtml) pageData).getHtmlContent();
+        } else {
+            return getStringFromStream(((PageImage) pageData).getStream());
+        }
+    }
+
+    private PageDescriptionEntity getPageDescriptionEntity(PageData page) {
+        PageDescriptionEntity pageDescriptionEntity = new PageDescriptionEntity();
+        pageDescriptionEntity.setNumber(page.getNumber());
+        pageDescriptionEntity.setAngle(page.getAngle());
+        pageDescriptionEntity.setHeight(page.getHeight());
+        pageDescriptionEntity.setWidth(page.getWidth());
+        return pageDescriptionEntity;
+    }
+
+    private String getStringFromStream(InputStream inputStream) throws IOException {
+        byte[] bytes = IOUtils.toByteArray(inputStream);
+        // encode ByteArray into String
+        return Base64.getEncoder().encodeToString(bytes);
     }
 
     private String getGuid(String guid) {
