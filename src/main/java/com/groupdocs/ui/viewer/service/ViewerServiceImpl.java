@@ -129,7 +129,7 @@ public class ViewerServiceImpl implements ViewerService {
     }
 
     @Override
-    public LoadDocumentEntity loadDocumentDescription(LoadDocumentRequest loadDocumentRequest) {
+    public LoadDocumentEntity loadDocumentDescription(LoadDocumentRequest loadDocumentRequest, boolean loadAllPages) {
         // get/set parameters
         String documentGuid = getGuid(loadDocumentRequest.getGuid());
         String password = loadDocumentRequest.getPassword();
@@ -140,7 +140,7 @@ public class ViewerServiceImpl implements ViewerService {
             DocumentInfoContainer documentInfoContainer = viewerHandler.getDocumentInfo(documentGuid, documentInfoOptions);
             List<Page> pagesData = Collections.EMPTY_LIST;
 
-            if (globalConfiguration.getViewer().getPreloadPageCount() == 0) {
+            if (loadAllPages) {
                 pagesData = getPagesData(documentGuid, password);
             }
 
@@ -211,7 +211,7 @@ public class ViewerServiceImpl implements ViewerService {
             List<RotatedPageEntity> rotatedPages = new ArrayList<>();
             // rotate pages
             for (int i = 0; i < pages.size(); i++) {
-                int pageNumber = Integer.parseInt(pages.get(i).toString());
+                int pageNumber = pages.get(i);
                 RotatePageOptions rotateOptions = new RotatePageOptions(pageNumber, rotateDocumentPagesRequest.getAngle());
                 // set password for protected document
                 if (StringUtils.isNotEmpty(password)) {
