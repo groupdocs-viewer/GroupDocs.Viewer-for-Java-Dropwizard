@@ -84,7 +84,20 @@ public class ViewerResources extends Resources {
     @Produces(APPLICATION_JSON)
     @Consumes(APPLICATION_JSON)
     public LoadDocumentEntity loadDocumentDescription(LoadDocumentRequest loadDocumentRequest){
-        return viewerService.loadDocumentDescription(loadDocumentRequest);
+        return viewerService.loadDocumentDescription(loadDocumentRequest, globalConfiguration.getViewer().getPreloadPageCount() == 0);
+    }
+
+    /**
+     * Get all pages for thumbnails
+     * @param loadDocumentRequest
+     * @return
+     */
+    @POST
+    @Path(value = "/loadThumbnails")
+    @Produces(APPLICATION_JSON)
+    @Consumes(APPLICATION_JSON)
+    public LoadDocumentEntity loadThumbnails(LoadDocumentRequest loadDocumentRequest){
+        return viewerService.loadDocumentDescription(loadDocumentRequest, true);
     }
 
     /**
