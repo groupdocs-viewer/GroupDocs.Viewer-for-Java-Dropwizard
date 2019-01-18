@@ -56,6 +56,10 @@ public class ViewerConfiguration extends Configuration {
     @JsonProperty
     private boolean cache;
 
+    @Valid
+    @JsonProperty
+    private boolean saveRotateState = true;
+
     public String getFilesDirectory() {
         return filesDirectory;
     }
@@ -134,5 +138,13 @@ public class ViewerConfiguration extends Configuration {
 
     public void setCache(boolean cache) {
         this.cache = cache;
+    }
+
+    public boolean isSaveRotateState() {
+        return saveRotateState;
+    }
+
+    public void setSaveRotateState(boolean saveRotateState) {
+        this.saveRotateState = saveRotateState;
     }
 }
