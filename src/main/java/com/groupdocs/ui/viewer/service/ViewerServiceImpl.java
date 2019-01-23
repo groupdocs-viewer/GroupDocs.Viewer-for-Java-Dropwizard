@@ -8,6 +8,7 @@ import com.groupdocs.ui.common.entity.web.request.FileTreeRequest;
 import com.groupdocs.ui.common.entity.web.request.LoadDocumentPageRequest;
 import com.groupdocs.ui.common.entity.web.request.LoadDocumentRequest;
 import com.groupdocs.ui.common.exception.TotalGroupDocsException;
+import com.groupdocs.ui.viewer.config.ViewerConfiguration;
 import com.groupdocs.ui.viewer.entity.web.RotatedPageEntity;
 import com.groupdocs.ui.viewer.model.web.RotateDocumentPagesRequest;
 import com.groupdocs.viewer.config.ViewerConfig;
@@ -160,11 +161,12 @@ public class ViewerServiceImpl implements ViewerService {
 
     protected List<Page> getPagesData(String documentGuid, String password) throws Exception {
         List<Page> pagesData;
-        if (globalConfiguration.getViewer().isHtmlMode()) {
-            HtmlOptions htmlOptions = createCommonHtmlOptions(password);
+        ViewerConfiguration viewerConfiguration = globalConfiguration.getViewer();
+        if (viewerConfiguration.isHtmlMode()) {
+            HtmlOptions htmlOptions = createCommonHtmlOptions(password, viewerConfiguration.getWatermarkText());
             pagesData = viewerHandler.getPages(documentGuid, htmlOptions);
         } else {
-            ImageOptions imageOptions = createCommonImageOptions(password);
+            ImageOptions imageOptions = createCommonImageOptions(password, viewerConfiguration.getWatermarkText());
             pagesData = viewerHandler.getPages(documentGuid, imageOptions);
         }
         return pagesData;
@@ -181,13 +183,14 @@ public class ViewerServiceImpl implements ViewerService {
             PageData pageData = viewerHandler.getDocumentInfo(documentGuid, documentInfoOptions).getPages().get(pageNumber - 1);
             PageDescriptionEntity loadedPage = getPageDescriptionEntity(pageData);
             // set options
-            if (globalConfiguration.getViewer().isHtmlMode()) {
-                HtmlOptions htmlOptions = createHtmlOptions(pageNumber, password);
+            ViewerConfiguration viewerConfiguration = globalConfiguration.getViewer();
+            if (viewerConfiguration.isHtmlMode()) {
+                HtmlOptions htmlOptions = createHtmlOptions(pageNumber, password, viewerConfiguration.getWatermarkText());
                 // get page HTML
                 PageHtml page = (PageHtml) viewerHandler.getPages(documentGuid, htmlOptions).get(0);
                 loadedPage.setData(page.getHtmlContent());
             } else {
-                ImageOptions imageOptions = createImageOptions(pageNumber, password);
+                ImageOptions imageOptions = createImageOptions(pageNumber, password, viewerConfiguration.getWatermarkText());
                 // get page image
                 PageImage page = (PageImage) viewerHandler.getPages(documentGuid, imageOptions).get(0);
                 loadedPage.setData(getStringFromStream(page.getStream()));
