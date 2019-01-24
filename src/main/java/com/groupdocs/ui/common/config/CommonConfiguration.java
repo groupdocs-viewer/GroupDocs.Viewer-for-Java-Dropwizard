@@ -36,6 +36,10 @@ public class CommonConfiguration extends Configuration {
     @JsonProperty
     private boolean rewrite;
 
+    @Valid
+    @JsonProperty
+    private boolean enableRightClick;
+
     public boolean isPageSelector() {
         return pageSelector;
     }
@@ -82,5 +86,13 @@ public class CommonConfiguration extends Configuration {
 
     public void setRewrite(boolean rewrite) {
         this.rewrite = rewrite;
+    }
+
+    public boolean isEnableRightClick() {
+        return enableRightClick;
+    }
+
+    public void setEnableRightClick(boolean enableRightClick) {
+        this.enableRightClick = enableRightClick;
     }
 }

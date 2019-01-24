@@ -31,7 +31,8 @@
                 upload: ${globalConfiguration.common.upload?c},
                 print: ${globalConfiguration.common.print?c},
                 browse: ${globalConfiguration.common.browse?c},
-                rewrite: ${globalConfiguration.common.rewrite?c}
+                rewrite: ${globalConfiguration.common.rewrite?c},
+                enableRightClick: ${globalConfiguration.common.enableRightClick?c},
             });
         </script>
     </body>
