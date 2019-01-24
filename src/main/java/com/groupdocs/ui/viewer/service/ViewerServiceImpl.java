@@ -8,6 +8,7 @@ import com.groupdocs.ui.common.entity.web.request.FileTreeRequest;
 import com.groupdocs.ui.common.entity.web.request.LoadDocumentPageRequest;
 import com.groupdocs.ui.common.entity.web.request.LoadDocumentRequest;
 import com.groupdocs.ui.common.exception.TotalGroupDocsException;
+import com.groupdocs.ui.viewer.config.ViewerConfiguration;
 import com.groupdocs.ui.viewer.entity.web.RotatedPageEntity;
 import com.groupdocs.ui.viewer.model.web.RotateDocumentPagesRequest;
 import com.groupdocs.viewer.config.ViewerConfig;
@@ -107,25 +108,24 @@ public class ViewerServiceImpl implements ViewerService {
     }
 
     protected FileDescriptionEntity getFileDescriptionEntity(FileDescription fd) {
-        FileDescriptionEntity fileDescription = new FileDescriptionEntity();
-        fileDescription.setGuid(fd.getGuid());
         // get temp directory name
         String tempDirectoryName = new ViewerConfig().getCacheFolderName();
         // check if current file/folder is temp directory or is hidden
-        if (tempDirectoryName.equals(fd.getName()) || new File(fileDescription.getGuid()).isHidden()) {
-            // ignore current file and skip to next one
-            return null;
-        } else {
+        if (!tempDirectoryName.equals(fd.getName()) && !new File(fd.getGuid()).isHidden()) {
+            FileDescriptionEntity fileDescription = new FileDescriptionEntity();
+            fileDescription.setGuid(fd.getGuid());
             // set file/folder name
             fileDescription.setName(fd.getName());
+            // set file type
+            fileDescription.setDocType(fd.getDocumentType());
+            // set is directory true/false
+            fileDescription.setDirectory(fd.isDirectory());
+            // set file size
+            fileDescription.setSize(fd.getSize());
+            return fileDescription;
         }
-        // set file type
-        fileDescription.setDocType(fd.getDocumentType());
-        // set is directory true/false
-        fileDescription.setDirectory(fd.isDirectory());
-        // set file size
-        fileDescription.setSize(fd.getSize());
-        return fileDescription;
+        // ignore current file and skip to next one
+        return null;
     }
 
     @Override
@@ -138,11 +138,8 @@ public class ViewerServiceImpl implements ViewerService {
         try {
             // get document info container
             DocumentInfoContainer documentInfoContainer = viewerHandler.getDocumentInfo(documentGuid, documentInfoOptions);
-            List<Page> pagesData = Collections.EMPTY_LIST;
 
-            if (loadAllPages) {
-                pagesData = getPagesData(documentGuid, password);
-            }
+            List<Page> pagesData = loadAllPages ? getPagesData(documentGuid, password) : Collections.EMPTY_LIST;
 
             List<PageDescriptionEntity> pages = getPageDescriptionEntities(documentInfoContainer.getPages(), pagesData);
 
@@ -160,11 +157,12 @@ public class ViewerServiceImpl implements ViewerService {
 
     protected List<Page> getPagesData(String documentGuid, String password) throws Exception {
         List<Page> pagesData;
-        if (globalConfiguration.getViewer().isHtmlMode()) {
-            HtmlOptions htmlOptions = createCommonHtmlOptions(password);
+        ViewerConfiguration viewerConfiguration = globalConfiguration.getViewer();
+        if (viewerConfiguration.isHtmlMode()) {
+            HtmlOptions htmlOptions = createCommonHtmlOptions(password, viewerConfiguration.getWatermarkText());
             pagesData = viewerHandler.getPages(documentGuid, htmlOptions);
         } else {
-            ImageOptions imageOptions = createCommonImageOptions(password);
+            ImageOptions imageOptions = createCommonImageOptions(password, viewerConfiguration.getWatermarkText());
             pagesData = viewerHandler.getPages(documentGuid, imageOptions);
         }
         return pagesData;
@@ -181,13 +179,14 @@ public class ViewerServiceImpl implements ViewerService {
             PageData pageData = viewerHandler.getDocumentInfo(documentGuid, documentInfoOptions).getPages().get(pageNumber - 1);
             PageDescriptionEntity loadedPage = getPageDescriptionEntity(pageData);
             // set options
-            if (globalConfiguration.getViewer().isHtmlMode()) {
-                HtmlOptions htmlOptions = createHtmlOptions(pageNumber, password);
+            ViewerConfiguration viewerConfiguration = globalConfiguration.getViewer();
+            if (viewerConfiguration.isHtmlMode()) {
+                HtmlOptions htmlOptions = createHtmlOptions(pageNumber, password, viewerConfiguration.getWatermarkText());
                 // get page HTML
                 PageHtml page = (PageHtml) viewerHandler.getPages(documentGuid, htmlOptions).get(0);
                 loadedPage.setData(page.getHtmlContent());
             } else {
-                ImageOptions imageOptions = createImageOptions(pageNumber, password);
+                ImageOptions imageOptions = createImageOptions(pageNumber, password, viewerConfiguration.getWatermarkText());
                 // get page image
                 PageImage page = (PageImage) viewerHandler.getPages(documentGuid, imageOptions).get(0);
                 loadedPage.setData(getStringFromStream(page.getStream()));
@@ -275,8 +274,7 @@ public class ViewerServiceImpl implements ViewerService {
     }
 
     private String getPageData(Page pageData) throws IOException {
-        boolean htmlMode = globalConfiguration.getViewer().isHtmlMode();
-        if (htmlMode) {
+        if (globalConfiguration.getViewer().isHtmlMode()) {
             return ((PageHtml) pageData).getHtmlContent();
         } else {
             return getStringFromStream(((PageImage) pageData).getStream());

@@ -60,6 +60,10 @@ public class ViewerConfiguration extends Configuration {
     @JsonProperty
     private boolean saveRotateState = true;
 
+    @Valid
+    @JsonProperty
+    private String watermarkText;
+
     public String getFilesDirectory() {
         return filesDirectory;
     }
@@ -146,5 +150,13 @@ public class ViewerConfiguration extends Configuration {
 
     public void setSaveRotateState(boolean saveRotateState) {
         this.saveRotateState = saveRotateState;
+    }
+
+    public String getWatermarkText() {
+        return watermarkText;
+    }
+
+    public void setWatermarkText(String watermarkText) {
+        this.watermarkText = watermarkText;
     }
 }
