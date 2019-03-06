@@ -63,7 +63,7 @@ public class ViewerServiceImpl implements ViewerService {
             filesDirectory = filesDirectory + File.separator;
         }
         config.setStoragePath(filesDirectory);
-        config.setUseCache(globalConfiguration.getViewer().isCache());
+        config.setEnableCaching(globalConfiguration.getViewer().isCache());
         config.getFontDirectories().add(globalConfiguration.getViewer().getFontsDirectory());
 
         try {
