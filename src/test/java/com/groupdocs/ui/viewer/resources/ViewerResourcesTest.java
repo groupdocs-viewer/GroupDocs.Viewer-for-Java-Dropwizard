@@ -25,8 +25,8 @@ public class ViewerResourcesTest {
     @Test
     public void getView() {
         Client client = new JerseyClientBuilder(RULE.getEnvironment()).build("test client");
-        client.property(ClientProperties.CONNECT_TIMEOUT, 1000);
-        client.property(ClientProperties.READ_TIMEOUT,    1000);
+        client.property(ClientProperties.CONNECT_TIMEOUT, 2000);
+        client.property(ClientProperties.READ_TIMEOUT,    2000);
         Response response = client.target(
                 String.format("http://localhost:%d/viewer", RULE.getLocalPort()))
                 .request()
