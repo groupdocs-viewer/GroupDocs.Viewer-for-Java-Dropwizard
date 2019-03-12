@@ -18,7 +18,7 @@
         <div id="element"></div>
         <script type="text/javascript">
             $('#element').viewer({
-                applicationPath: 'http://${globalConfiguration.server.hostAddress}:${globalConfiguration.server.httpPort?c}/viewer',
+                applicationPath: 'http://${globalConfiguration.application.hostAddress}:${globalConfiguration.server.httpPort?c}/viewer',
 				defaultDocument: '${globalConfiguration.viewer.defaultDocument}',
 				htmlMode: ${globalConfiguration.viewer.htmlMode?c},
                 preloadPageCount: ${globalConfiguration.viewer.preloadPageCount?c},

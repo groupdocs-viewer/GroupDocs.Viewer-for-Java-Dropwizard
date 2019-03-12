@@ -9,7 +9,6 @@ import io.dropwizard.Configuration;
  */
 public class ServerConfiguration extends Configuration{
     private int httpPort;
-    private String hostAddress;
 
     public int getHttpPort() {
         return httpPort;
@@ -17,14 +16,6 @@ public class ServerConfiguration extends Configuration{
 
     public void setHttpPort(int httpPort) {
         this.httpPort = httpPort;
-    }
-
-    public String getHostAddress() {
-        return hostAddress;
-    }
-
-    public void setHostAddress(String hostAddress) {
-        this.hostAddress = hostAddress;
     }
 
 }

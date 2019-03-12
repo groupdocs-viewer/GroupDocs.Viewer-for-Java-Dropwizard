@@ -6,7 +6,6 @@ server:
   applicationContextPath: /
   adminContextPath: /admin
   connector:
-    bindHost: localhost
     type: http
     port: 8080
 
@@ -16,7 +15,9 @@ server:
 application:
   # License path
   # Absolute or relative path to GroupDocs license file
-  licensePath: 
+  licensePath:
+  # Host name or ip for server instance
+  hostAddress: ${application.hostAddress}
 
 ################################################
 # Common configurations

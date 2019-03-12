@@ -19,6 +19,9 @@ public class ApplicationConfiguration extends Configuration {
     @Valid
     @JsonProperty
     private String licensePath;
+    @Valid
+    @JsonProperty
+    private String hostAddress;
 
     public String getLicensePath() {
         return licensePath;
@@ -28,4 +31,11 @@ public class ApplicationConfiguration extends Configuration {
         this.licensePath = StringUtils.isEmpty(licensePath) ? defaultLicenseDirectory() : relativePathToAbsolute(licensePath);
     }
 
+    public String getHostAddress() {
+        return hostAddress;
+    }
+
+    public void setHostAddress(String hostAddress) {
+        this.hostAddress = hostAddress;
+    }
 }
