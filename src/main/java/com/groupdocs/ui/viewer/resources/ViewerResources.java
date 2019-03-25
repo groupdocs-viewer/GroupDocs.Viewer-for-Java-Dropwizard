@@ -1,7 +1,10 @@
 package com.groupdocs.ui.viewer.resources;
 
 import com.groupdocs.ui.common.config.GlobalConfiguration;
-import com.groupdocs.ui.common.entity.web.*;
+import com.groupdocs.ui.common.entity.web.FileDescriptionEntity;
+import com.groupdocs.ui.common.entity.web.LoadDocumentEntity;
+import com.groupdocs.ui.common.entity.web.PageDescriptionEntity;
+import com.groupdocs.ui.common.entity.web.UploadedDocumentEntity;
 import com.groupdocs.ui.common.entity.web.request.FileTreeRequest;
 import com.groupdocs.ui.common.entity.web.request.LoadDocumentPageRequest;
 import com.groupdocs.ui.common.entity.web.request.LoadDocumentRequest;
@@ -19,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.UnknownHostException;
 import java.util.List;
@@ -42,6 +44,7 @@ public class ViewerResources extends Resources {
 
     /**
      * Constructor
+     *
      * @param globalConfiguration global configuration object
      * @throws UnknownHostException
      */
@@ -53,16 +56,18 @@ public class ViewerResources extends Resources {
 
     /**
      * Get and set viewer page
+     *
      * @return html view
      */
     @GET
-    public Viewer getView(){
+    public Viewer getView() {
         // initiate index page
         return new Viewer(globalConfiguration, DEFAULT_CHARSET);
     }
 
     /**
      * Get files and directories
+     *
      * @param fileTreeRequest request's object with specified path
      * @return files and directories list
      */
@@ -70,12 +75,13 @@ public class ViewerResources extends Resources {
     @Path(value = "/loadFileTree")
     @Produces(APPLICATION_JSON)
     @Consumes(APPLICATION_JSON)
-    public List<FileDescriptionEntity> loadFileTree(FileTreeRequest fileTreeRequest){
+    public List<FileDescriptionEntity> loadFileTree(FileTreeRequest fileTreeRequest) {
         return viewerService.loadFileTree(fileTreeRequest);
     }
 
     /**
      * Get document description
+     *
      * @param loadDocumentRequest request's object with parameters
      * @return document description
      */
@@ -83,12 +89,13 @@ public class ViewerResources extends Resources {
     @Path(value = "/loadDocumentDescription")
     @Produces(APPLICATION_JSON)
     @Consumes(APPLICATION_JSON)
-    public LoadDocumentEntity loadDocumentDescription(LoadDocumentRequest loadDocumentRequest){
+    public LoadDocumentEntity loadDocumentDescription(LoadDocumentRequest loadDocumentRequest) {
         return viewerService.loadDocumentDescription(loadDocumentRequest, globalConfiguration.getViewer().getPreloadPageCount() == 0);
     }
 
     /**
      * Get all pages for thumbnails
+     *
      * @param loadDocumentRequest
      * @return
      */
@@ -96,12 +103,13 @@ public class ViewerResources extends Resources {
     @Path(value = "/loadThumbnails")
     @Produces(APPLICATION_JSON)
     @Consumes(APPLICATION_JSON)
-    public LoadDocumentEntity loadThumbnails(LoadDocumentRequest loadDocumentRequest){
+    public LoadDocumentEntity loadThumbnails(LoadDocumentRequest loadDocumentRequest) {
         return viewerService.loadDocumentDescription(loadDocumentRequest, true);
     }
 
     /**
      * Get document page
+     *
      * @param loadDocumentPageRequest request's object with parameters
      * @return document page
      */
@@ -109,12 +117,39 @@ public class ViewerResources extends Resources {
     @Path(value = "/loadDocumentPage")
     @Produces(APPLICATION_JSON)
     @Consumes(APPLICATION_JSON)
-    public PageDescriptionEntity loadDocumentPage(LoadDocumentPageRequest loadDocumentPageRequest){
+    public PageDescriptionEntity loadDocumentPage(LoadDocumentPageRequest loadDocumentPageRequest) {
         return viewerService.loadDocumentPage(loadDocumentPageRequest);
     }
 
     /**
+     * Get document for printing
+     *
+     * @param loadDocumentRequest
+     * @return
+     */
+    @POST
+    @Path(value = "/loadPrint")
+    @Produces(APPLICATION_JSON)
+    @Consumes(APPLICATION_JSON)
+    public LoadDocumentEntity loadPrint(LoadDocumentRequest loadDocumentRequest) {
+        return viewerService.loadDocumentDescription(loadDocumentRequest, true);
+    }
+
+    /**
+     * Get pdf document for printing
+     *
+     * @return
+     */
+    @POST
+    @Path(value = "/printPdf")
+    @Consumes(APPLICATION_JSON)
+    public void printPdf(LoadDocumentRequest loadDocumentRequest, @Context HttpServletResponse response) {
+        downloadFile(response, loadDocumentRequest.getGuid());
+    }
+
+    /**
      * Rotate page(s)
+     *
      * @param rotateDocumentPagesRequest request's object with parameters
      * @return rotated pages list (each object contains page number and rotated angle information)
      */
@@ -122,28 +157,30 @@ public class ViewerResources extends Resources {
     @Path(value = "/rotateDocumentPages")
     @Produces(APPLICATION_JSON)
     @Consumes(APPLICATION_JSON)
-    public List<RotatedPageEntity> rotateDocumentPages(RotateDocumentPagesRequest rotateDocumentPagesRequest){
+    public List<RotatedPageEntity> rotateDocumentPages(RotateDocumentPagesRequest rotateDocumentPagesRequest) {
         return viewerService.rotateDocumentPages(rotateDocumentPagesRequest);
     }
 
     /**
      * Download document
+     *
      * @param documentGuid path to document parameter
      * @param response
      */
     @GET
     @Path(value = "/downloadDocument")
     @Produces(APPLICATION_OCTET_STREAM)
-    public void downloadDocument(@QueryParam("path") String documentGuid, @Context HttpServletResponse response) throws IOException {
+    public void downloadDocument(@QueryParam("path") String documentGuid, @Context HttpServletResponse response) {
         downloadFile(response, documentGuid);
     }
 
     /**
      * Upload document
+     *
      * @param inputStream file content
-     * @param fileDetail file description
+     * @param fileDetail  file description
      * @param documentUrl url for document
-     * @param rewrite flag for rewriting file
+     * @param rewrite     flag for rewriting file
      * @return uploaded document object (the object contains uploaded document guid)
      */
     @POST
@@ -151,9 +188,9 @@ public class ViewerResources extends Resources {
     @Produces(APPLICATION_JSON)
     @Consumes(MULTIPART_FORM_DATA)
     public UploadedDocumentEntity uploadDocument(@FormDataParam("file") InputStream inputStream,
-                                 @FormDataParam("file") FormDataContentDisposition fileDetail,
-                                 @FormDataParam("url") String documentUrl,
-                                 @FormDataParam("rewrite") Boolean rewrite) {
+                                                 @FormDataParam("file") FormDataContentDisposition fileDetail,
+                                                 @FormDataParam("url") String documentUrl,
+                                                 @FormDataParam("rewrite") Boolean rewrite) {
         // upload file
         String pathname = uploadFile(documentUrl, inputStream, fileDetail, rewrite, null);
         // create response
