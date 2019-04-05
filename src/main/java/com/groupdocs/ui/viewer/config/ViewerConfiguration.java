@@ -64,6 +64,10 @@ public class ViewerConfiguration extends Configuration {
     @JsonProperty
     private String watermarkText;
 
+    @Valid
+    @JsonProperty
+    private boolean printAllowed;
+
     public String getFilesDirectory() {
         return filesDirectory;
     }
@@ -158,5 +162,13 @@ public class ViewerConfiguration extends Configuration {
 
     public void setWatermarkText(String watermarkText) {
         this.watermarkText = watermarkText;
+    }
+
+    public boolean getPrintAllowed() {
+        return printAllowed;
+    }
+
+    public void setPrintAllowed(boolean printAllowed) {
+        this.printAllowed = printAllowed;
     }
 }

@@ -4,6 +4,7 @@ import com.groupdocs.ui.common.entity.web.ExceptionEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
@@ -32,6 +33,7 @@ public class TotalGroupDocsExceptionMapper implements ExceptionMapper<TotalGroup
         logger.error(exception.getCause() != null? exception.getCause().getLocalizedMessage() : message);
         return Response
                 .serverError()
+                .type(MediaType.APPLICATION_JSON_TYPE)
                 .entity(exceptionEntity)
                 .build();
     }
