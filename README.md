@@ -30,7 +30,7 @@ This application is a **document viewer** web UI that allows you to view over 50
 - Easily switchable colour theme (create your own colour theme in 5 minutes)
 - Responsive design
 - Mobile support (open application on any mobile device)
-- Support over 50 documents and image formats
+- Support over 50 documents and image formats including popular MS Office (Word, Excel, PowerPoint)
 - HTML and image document viewing modes
 - Fully customizable navigation panel
 - Open password protected documents
@@ -88,10 +88,10 @@ mkdir Licenses
 docker run -p 8080:8080 --env application.hostAddress=localhost -v `pwd`/DocumentSamples:/home/groupdocs/app/DocumentSamples -v `pwd`/Licenses:/home/groupdocs/app/Licenses groupdocs/viewer
 ## Open http://localhost:8080/viewer/ in your favorite browser.
 ```
-#### Configuration
+### Configuration
 For all methods above you can adjust settings in `configuration.yml`. By default in this sample will lookup for license file in `./Licenses` folder, so you can simply put your license file in that folder or specify relative/absolute path by setting `licensePath` value in `configuration.yml`. 
 
-##### Viewer configuration options
+#### Viewer configuration options
 
 | Option                 | Type    |   Default value   | Description                                                                                                                                  |
 | ---------------------- | ------- |:-----------------:|:-------------------------------------------------------------------------------------------------------------------------------------------- |
