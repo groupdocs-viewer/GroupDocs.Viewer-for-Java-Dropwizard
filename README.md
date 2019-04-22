@@ -14,8 +14,8 @@
 
 ## Document viewer UI
 
-
-This application is a **document viewer** web UI that allows you to view over 50 document formats including **DOCX**, **PDF**, **PPT**, **XLS**, and many others. Thanks to its flexible configuration it can be configured to **view documents as images or as HTML5**. In its core, powerful and flexible [GroupDocs.Viewer for Java](https://products.groupdocs.com/viewer/java) API, with a possibility to view over 50 document formats without external dependencies.
+[GroupDocs.Viewer for Java](https://products.groupdocs.com/viewer/java) API allows you to view over 90 document formats including **DOCX**, **PDF**, **PPT**, **XLS**, among many others without any additional dependencies. Thanks to its flexible configuration it can be configured to **view documents as images or as HTML5**.
+In order to demonstrate GroupDocs.Viewer for Java reach and powerful features we prepared a modern **document viewer** front-end web UI example. Which can be used as a standalone application or easily integrated into your project.
 
 **Note:** Without a license application will run in trial mode, purchase [GroupDocs.Viewer for Java license](https://purchase.groupdocs.com/order-online-step-1-of-8.aspx) or request [GroupDocs.Viewer for Java temporary license](https://purchase.groupdocs.com/temporary-license).
 
@@ -30,7 +30,7 @@ This application is a **document viewer** web UI that allows you to view over 50
 - Easily switchable colour theme (create your own colour theme in 5 minutes)
 - Responsive design
 - Mobile support (open application on any mobile device)
-- Support over 50 documents and image formats including popular MS Office (Word, Excel, PowerPoint)
+- Support over 90 documents and image formats including popular MS Office (Word, Excel, PowerPoint)
 - HTML and image document viewing modes
 - Fully customizable navigation panel
 - Open password protected documents
@@ -112,7 +112,7 @@ For all methods above you can adjust settings in `configuration.yml`. By default
 ## License
 The MIT License (MIT). Please have a look at the LICENSE.md for more details
 
-## GroupDocs Document Viewer on other platforms
+## GroupDocs Document Viewer on other platforms/frameworks
 
 - JAVA Sprint Boot [Document Viewer](https://github.com/groupdocs-viewer/GroupDocs.Viewer-for-Java-Spring) 
 - .NET MVC [Document viewer](https://github.com/groupdocs-viewer/GroupDocs.Viewer-for-.NET-MVC)
