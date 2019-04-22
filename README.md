@@ -114,9 +114,9 @@ The MIT License (MIT). Please have a look at the LICENSE.md for more details
 
 ## GroupDocs Document Viewer on other platforms
 
-JAVA Sprint Boot [Document Viewer](https://github.com/groupdocs-viewer/GroupDocs.Viewer-for-Java-Spring) 
-.NET MVC [Document viewer](https://github.com/groupdocs-viewer/GroupDocs.Viewer-for-.NET-MVC)
-.NET WebForms [Document viewer](https://github.com/groupdocs-viewer/GroupDocs.Viewer-for-.NET-WebForms)
+- JAVA Sprint Boot [Document Viewer](https://github.com/groupdocs-viewer/GroupDocs.Viewer-for-Java-Spring) 
+- .NET MVC [Document viewer](https://github.com/groupdocs-viewer/GroupDocs.Viewer-for-.NET-MVC)
+- .NET WebForms [Document viewer](https://github.com/groupdocs-viewer/GroupDocs.Viewer-for-.NET-WebForms)
 
 ## Resources
 - **Website:** [www.groupdocs.com](http://www.groupdocs.com)
