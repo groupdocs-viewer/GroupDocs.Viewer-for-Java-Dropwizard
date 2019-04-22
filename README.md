@@ -23,25 +23,25 @@ In order to demonstrate GroupDocs.Viewer for Java reach and powerful features we
 
 ## Supported Formats
 
-| Family                      | Formats                                                                                                                |
-| --------------------------- |:---------------------------------------------------------------------------------------------------------------------- |
-| Portable Document Format    | PDF                                                                                                                    |
-| Microsoft Word              | DOC – binary files, DOCM , DOCX – Open XML files, DOT, DOTM, DOTX                                                      |
-| Microsoft Excel             | XLS – binary files, XLSB, XLSM, XLSX – Open XML files, XLT, XLTM, XLTX                                                 |
-| Microsoft PowerPoint        | PPT – binary files, POT, POTM, POTX, PPS, PPSM, PPSX, PPTM, PPTX – Open XML files                                      |
-| Microsoft Visio             | VSD, VDW, VDX, VSDX, VSS, VST, VSX, VTX                                                                                |
-| Microsoft Project           | MPP, MPT                                                                                                               |
-| Microsoft Outlook           | EML, EMLX, MSG                                                                                                         |
-| OpenDocument Formats        | ODT – OpenOffice Document, ODP – OpenOffice Presentation, ODS – OpenOffice Spreadsheet, OTT – OpenOffice Text Template |
-| Plain Text File             | TXT                                                                                                                    |
-| Comma-Separated Values      | CSV                                                                                                                    |
-| HyperText Markup Language   | HTML, MHT, MHTML, SVG                                                                                                  |
-| Extensible Markup Language  | XML,XML Paper Specification, XPS                                                                                       |
-| AutoCAD Drawing File Format | DGN, DWG, DXF                                                                                                          |
-| Image files                 | BMP, CAL, DCX, DIB, EMF, GIF, JP2, JPG, MIL, MIL, PCD, PCT, PCX, PNG, PSD, RAS, TGA,TIFF,WMF                           |
-| Electronic publication      | EPUB                                                                                                                   |
-| Windows Icon                | ICO                                                                                                                    |
-| Medical image files         | DCM – Digital Imaging and Communications in Medicine (DICOM) image                                                     | 
+| Family                      | Formats                                                                                                                            |
+| --------------------------- |:---------------------------------------------------------------------------------------------------------------------------------- |
+| Portable Document Format    | `PDF`                                                                                                                              |
+| Microsoft Word              | `DOC` – binary files, `DOCM` , `DOCX` – Open XML files, `DOT`, `DOTM`, `DOTX`                                                      |
+| Microsoft Excel             | `XLS` – binary files, `XLSB`, `XLSM`, `XLSX` – Open XML files, `XLT`, `XLTM`, `XLTX`                                               |
+| Microsoft PowerPoint        | `PPT` – binary files, `POT`, `POTM`, `POTX`, `PPS`, `PPSM`, `PPSX`, `PPTM`, `PPTX` – Open XML files                                |
+| Microsoft Visio             | `VSD`, `VDW`, `VDX`, `VSDX`, `VSS`, `VST`, `VSX`, `VTX`                                                                            |
+| Microsoft Project           | `MPP`, `MPT`                                                                                                                       |
+| Microsoft Outlook           | `EML`, `EMLX`, `MSG`                                                                                                               |
+| OpenDocument Formats        | `ODT` – OpenOffice Document, `ODP` – OpenOffice Presentation, `ODS` – OpenOffice Spreadsheet, `OTT` – OpenOffice Text Template     |
+| Plain Text File             | `TXT`                                                                                                                              |
+| Comma-Separated Values      | `CSV`                                                                                                                              |
+| HyperText Markup Language   | `HTML`, `MHT`, `MHTML`, `SVG`                                                                                                      |
+| Extensible Markup Language  | `XML`,`XML` Paper Specification, `XPS`                                                                                             |
+| AutoCAD Drawing File Format | `DGN`, `DWG`, `DXF`                                                                                                                |
+| Image files                 | `BMP`, `CAL`, `DCX`, `DIB`, `EMF`, `GIF`, `JP2`, `JPG`, `MIL`, `MIL`, `PCD`, `PCT`, `PCX`, `PNG`, `PSD`, `RAS`, `TGA`,`TIFF`,`WMF` |
+| Electronic publication      | `EPUB`                                                                                                                             | 
+| Windows Icon                | `ICO`                                                                                                                              |
+| Medical image files         | `DCM` – Digital Imaging and Communications in Medicine (DICOM) image                                                               |
 
 ## Demo Video
 
