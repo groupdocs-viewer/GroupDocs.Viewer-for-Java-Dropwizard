@@ -14,7 +14,8 @@
 
 ## Document viewer UI
 
-This application is a **document viewer** web UI that allows you to view over 50 document formats including **docx**, **pdf**, **ppt**, **xls** and may others. Thanks to it flexible configuration it can be configured to **view documents as images or as HTML5**. In it's core, powerful and flexible [GroupDocs.Viewer for Java](https://products.groupdocs.com/viewer/java) API, with possbibility to view over 50 document formats without external dependencies. 
+
+This application is a **document viewer** web UI that allows you to view over 50 document formats including **DOCX**, **PDF**, **PPT**, **XLS**, and many others. Thanks to its flexible configuration it can be configured to **view documents as images or as HTML5**. In its core, powerful and flexible [GroupDocs.Viewer for Java](https://products.groupdocs.com/viewer/java) API, with a possibility to view over 50 document formats without external dependencies.
 
 **Note:** Without a license application will run in trial mode, purchase [GroupDocs.Viewer for Java license](https://purchase.groupdocs.com/order-online-step-1-of-8.aspx) or request [GroupDocs.Viewer for Java temporary license](https://purchase.groupdocs.com/temporary-license).
 
@@ -110,6 +111,12 @@ For all methods above you can adjust settings in `configuration.yml`. By default
 
 ## License
 The MIT License (MIT). Please have a look at the LICENSE.md for more details
+
+## GroupDocs Document Viewer on other platforms
+
+JAVA Sprint Boot [Document Viewer](https://github.com/groupdocs-viewer/GroupDocs.Viewer-for-Java-Spring) 
+.NET MVC [Document viewer](https://github.com/groupdocs-viewer/GroupDocs.Viewer-for-.NET-MVC)
+.NET WebForms [Document viewer](https://github.com/groupdocs-viewer/GroupDocs.Viewer-for-.NET-WebForms)
 
 ## Resources
 - **Website:** [www.groupdocs.com](http://www.groupdocs.com)
