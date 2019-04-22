@@ -12,18 +12,19 @@
 - Maven 3
 
 
-## Document viewer UI
+## Document Viewer API for Java Dropwizard
 
 [GroupDocs.Viewer for Java](https://products.groupdocs.com/viewer/java) API allows you to view over 90 document formats including **DOCX**, **PDF**, **PPT**, **XLS**, among many others without any additional dependencies. Thanks to its flexible configuration it can be configured to **view documents as images or as HTML5**.
+
+
 In order to demonstrate GroupDocs.Viewer for Java reach and powerful features we prepared a modern **document viewer** front-end web UI example. Which can be used as a standalone application or easily integrated into your project.
 
-**Note:** Without a license application will run in trial mode, purchase [GroupDocs.Viewer for Java license](https://purchase.groupdocs.com/order-online-step-1-of-8.aspx) or request [GroupDocs.Viewer for Java temporary license](https://purchase.groupdocs.com/temporary-license).
+**Note:** without a license application will run in trial mode, purchase [GroupDocs.Viewer for Java license](https://purchase.groupdocs.com/order-online-step-1-of-8.aspx) or request [GroupDocs.Viewer for Java temporary license](https://purchase.groupdocs.com/temporary-license).
 
 
 ## Demo Video
 
 [![Document viewer](https://raw.githubusercontent.com/groupdocs-viewer/groupdocs-viewer.github.io/master/resources/image/document-viewer-demo.gif)](https://www.youtube.com/watch?v=NnZaMNUC6o0)
-
 
 ## Features
 - Clean, modern and intuitive design
