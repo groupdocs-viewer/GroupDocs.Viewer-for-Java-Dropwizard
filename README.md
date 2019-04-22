@@ -47,7 +47,7 @@ In order to demonstrate GroupDocs.Viewer for Java reach and powerful features we
 
 <p align="center">
   <a title="Document viewer for JAVA " href="https://www.youtube.com/watch?v=NnZaMNUC6o0"> 
-    <img src="https://raw.githubusercontent.com/groupdocs-viewer/groupdocs-viewer.github.io/master/resources/image/document-viewer-demo.gif" style="width:100%;">
+    <img src="https://raw.githubusercontent.com/groupdocs-viewer/groupdocs-viewer.github.io/master/resources/image/document-viewer-demo.gif" width="100%" style="width:100%;">
   </a>
 </p>
 
