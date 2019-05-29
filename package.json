@@ -17,8 +17,7 @@
   },
   "homepage": "https://github.com/groupdocs-viewer/GroupDocs.Viewer-for-Java-Dropwizard#readme",
   "dependencies": {
-    "@groupdocs.examples.jquery/common": "^0.12.0",
-    "@groupdocs.examples.jquery/viewer": "^0.12.0"
+    "@groupdocs.total-angular/viewer": "^0.0.8"
   },
   "devDependencies": {
     "gulp": "^4.0.0"
