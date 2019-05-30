@@ -8,12 +8,14 @@ import com.groupdocs.ui.common.entity.web.UploadedDocumentEntity;
 import com.groupdocs.ui.common.entity.web.request.FileTreeRequest;
 import com.groupdocs.ui.common.entity.web.request.LoadDocumentPageRequest;
 import com.groupdocs.ui.common.entity.web.request.LoadDocumentRequest;
+import com.groupdocs.ui.common.exception.TotalGroupDocsException;
 import com.groupdocs.ui.common.resources.Resources;
 import com.groupdocs.ui.viewer.entity.web.RotatedPageEntity;
 import com.groupdocs.ui.viewer.model.web.RotateDocumentPagesRequest;
 import com.groupdocs.ui.viewer.service.ViewerService;
 import com.groupdocs.ui.viewer.service.ViewerServiceImpl;
 import com.groupdocs.ui.viewer.views.Viewer;
+import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
@@ -90,6 +92,9 @@ public class ViewerResources extends Resources {
     @Produces(APPLICATION_JSON)
     @Consumes(APPLICATION_JSON)
     public LoadDocumentEntity loadDocumentDescription(LoadDocumentRequest loadDocumentRequest) {
+        if (StringUtils.isEmpty(loadDocumentRequest.getGuid())) {
+            throw new TotalGroupDocsException("Document guid is empty!");
+        }
         return viewerService.loadDocumentDescription(loadDocumentRequest, globalConfiguration.getViewer().getPreloadPageCount() == 0);
     }
 
