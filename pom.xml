@@ -194,15 +194,6 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>gulp copy</id>
-                        <goals>
-                            <goal>gulp</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>copy</arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>gulp config</id>
                         <goals>
                             <goal>gulp</goal>
