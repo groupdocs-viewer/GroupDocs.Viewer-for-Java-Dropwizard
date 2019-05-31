@@ -8,7 +8,7 @@ vs.bin
 App_Data/*
 node_modules
 src/main/resources/assets/*
-!src/main/resources/assets/.gitkeep
+!src/main/resources/assets/static/.gitkeep
 node/
 etc/
 package-lock.json

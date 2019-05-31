@@ -253,9 +253,9 @@ public class ViewerServiceImpl implements ViewerService {
     protected String getExceptionMessage(String password, GroupDocsViewerException ex) {
         // Set exception message
         String message = ex.getMessage();
-        if (GroupDocsViewerException.class.isAssignableFrom(InvalidPasswordException.class) && password.isEmpty()) {
+        if (GroupDocsViewerException.class.isAssignableFrom(InvalidPasswordException.class) && StringUtils.isEmpty(password)) {
             message = PASSWORD_REQUIRED;
-        } else if (GroupDocsViewerException.class.isAssignableFrom(InvalidPasswordException.class) && !password.isEmpty()) {
+        } else if (GroupDocsViewerException.class.isAssignableFrom(InvalidPasswordException.class) && StringUtils.isNotEmpty(password)) {
             message = INCORRECT_PASSWORD;
         }
         return message;

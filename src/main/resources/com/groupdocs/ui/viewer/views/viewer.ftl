@@ -1,39 +1,15 @@
 <#-- @ftlvariable name="" type="Viewer" -->
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>GroupDocs.Viewer for Java Dropwizard</title>
-        <link type="text/css" rel="stylesheet" href="/assets/common/css/all.min.css">
-        <link type="text/css" rel="stylesheet" href="/assets/common/css/v4-shims.min.css">
-        <link type="text/css" rel="stylesheet" href="/assets/common/css/swiper.min.css">
-        <link type="text/css" rel="stylesheet" href="/assets/common/css/circle-progress.css"/>
-        <link type="text/css" rel="stylesheet" href="/assets/viewer/css/viewer.css"/>
-        <link type="text/css" rel="stylesheet" href="/assets/viewer/css/viewer.mobile.css"/>
-        <link type="text/css" rel="stylesheet" href="/assets/viewer/css/viewer-dark.css"/>
-        <script type="text/javascript" src="/assets/common/js/jquery.min.js"></script>
-		<script type="text/javascript" src="/assets/common/js/swiper.min.js"></script>
-        <script type="text/javascript" src="/assets/viewer/js/viewer.js"></script>
-    </head>
-    <body>
-        <div id="element"></div>
-        <script type="text/javascript">
-            $('#element').viewer({
-                applicationPath: 'http://${globalConfiguration.application.hostAddress}:${globalConfiguration.server.httpPort?c}/viewer',
-				defaultDocument: '${globalConfiguration.viewer.defaultDocument}',
-				htmlMode: ${globalConfiguration.viewer.htmlMode?c},
-                preloadPageCount: ${globalConfiguration.viewer.preloadPageCount?c},
-				zoom : ${globalConfiguration.viewer.zoom?c},
-				pageSelector: ${globalConfiguration.common.pageSelector?c},
-				search: ${globalConfiguration.viewer.search?c},
-				thumbnails: ${globalConfiguration.viewer.thumbnails?c},
-				rotate: ${globalConfiguration.viewer.rotate?c},
-				download: ${globalConfiguration.common.download?c},
-                upload: ${globalConfiguration.common.upload?c},
-                print: ${globalConfiguration.common.print?c},
-                browse: ${globalConfiguration.common.browse?c},
-                rewrite: ${globalConfiguration.common.rewrite?c},
-                enableRightClick: ${globalConfiguration.common.enableRightClick?c},
-            });
-        </script>
-    </body>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>GroupDocs.Viewer for Java Dropwizard</title>
+    <base href="/" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="/assets/angular/viewer/dist/assets/css/all.min.css" />
+</head>
+<body>
+<gd-viewer-angular-root></gd-viewer-angular-root>
+<script type="text/javascript" src="/assets/angular/viewer/dist/runtime.js"></script><script type="text/javascript" src="/assets/angular/viewer/dist/es2015-polyfills.js" nomodule></script><script type="text/javascript" src="/assets/angular/viewer/dist/polyfills.js"></script><script type="text/javascript" src="/assets/angular/viewer/dist/styles.js"></script><script type="text/javascript" src="/assets/angular/viewer/dist/scripts.js"></script></script><script type="text/javascript" src="/assets/angular/viewer/dist/main.js"></script></body>
 </html>

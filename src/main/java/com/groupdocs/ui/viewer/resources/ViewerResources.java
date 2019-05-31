@@ -11,6 +11,7 @@ import com.groupdocs.ui.common.entity.web.request.LoadDocumentRequest;
 import com.groupdocs.ui.common.exception.TotalGroupDocsException;
 import com.groupdocs.ui.common.resources.Resources;
 import com.groupdocs.ui.viewer.entity.web.RotatedPageEntity;
+import com.groupdocs.ui.viewer.model.ViewerConfigurationModel;
 import com.groupdocs.ui.viewer.model.web.RotateDocumentPagesRequest;
 import com.groupdocs.ui.viewer.service.ViewerService;
 import com.groupdocs.ui.viewer.service.ViewerServiceImpl;
@@ -65,6 +66,13 @@ public class ViewerResources extends Resources {
     public Viewer getView() {
         // initiate index page
         return new Viewer(globalConfiguration, DEFAULT_CHARSET);
+    }
+
+    @GET
+    @Path(value = "/loadConfig")
+    @Produces(APPLICATION_JSON)
+    public ViewerConfigurationModel loadConfig() {
+        return ViewerConfigurationModel.createViewerConfiguration(globalConfiguration.getViewer(), globalConfiguration.getCommon());
     }
 
     /**
