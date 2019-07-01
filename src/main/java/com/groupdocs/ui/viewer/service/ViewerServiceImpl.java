@@ -61,15 +61,6 @@ public class ViewerServiceImpl implements ViewerService {
 
     public ViewerServiceImpl(GlobalConfiguration globalConfiguration) {
         viewerConfiguration = globalConfiguration.getViewer();
-        // create viewer application configuration
-        ViewerConfig config = new ViewerConfig();
-        String filesDirectory = viewerConfiguration.getFilesDirectory();
-        if (StringUtils.isNotEmpty(filesDirectory) && !filesDirectory.endsWith(File.separator)) {
-            filesDirectory = filesDirectory + File.separator;
-        }
-        config.setStoragePath(filesDirectory);
-        config.setEnableCaching(viewerConfiguration.isCache());
-        config.getFontDirectories().add(viewerConfiguration.getFontsDirectory());
 
         try {
             // set GroupDocs license
@@ -78,6 +69,8 @@ public class ViewerServiceImpl implements ViewerService {
         } catch (Throwable ex) {
             logger.error("Can not verify Viewer license!");
         }
+        // create viewer application configuration
+        ViewerConfig config = getViewerConfig();
 
         if (viewerConfiguration.isHtmlMode()) {
             // initialize total instance for the HTML mode
@@ -86,6 +79,20 @@ public class ViewerServiceImpl implements ViewerService {
             // initialize total instance for the Image mode
             viewerHandler = new ViewerImageHandler(config);
         }
+    }
+
+    private ViewerConfig getViewerConfig() {
+        ViewerConfig config = new ViewerConfig();
+        String filesDirectory = viewerConfiguration.getFilesDirectory();
+        if (StringUtils.isNotEmpty(filesDirectory) && !filesDirectory.endsWith(File.separator)) {
+            filesDirectory = filesDirectory + File.separator;
+        }
+        config.setStoragePath(filesDirectory);
+        config.setEnableCaching(viewerConfiguration.isCache());
+        if (!StringUtils.isEmpty(viewerConfiguration.getFontsDirectory())) {
+            config.getFontDirectories().add(viewerConfiguration.getFontsDirectory());
+        }
+        return config;
     }
 
     @Override
@@ -183,7 +190,6 @@ public class ViewerServiceImpl implements ViewerService {
     @Override
     public PageDescriptionEntity loadDocumentPage(LoadDocumentPageRequest loadDocumentPageRequest) {
         try {
-            // get/set parameters
             String documentGuid = loadDocumentPageRequest.getGuid();
             int pageNumber = loadDocumentPageRequest.getPage();
             String password = loadDocumentPageRequest.getPassword();
@@ -252,13 +258,11 @@ public class ViewerServiceImpl implements ViewerService {
 
     protected String getExceptionMessage(String password, GroupDocsViewerException ex) {
         // Set exception message
-        String message = ex.getMessage();
-        if (GroupDocsViewerException.class.isAssignableFrom(InvalidPasswordException.class) && StringUtils.isEmpty(password)) {
-            message = PASSWORD_REQUIRED;
-        } else if (GroupDocsViewerException.class.isAssignableFrom(InvalidPasswordException.class) && StringUtils.isNotEmpty(password)) {
-            message = INCORRECT_PASSWORD;
+        if (GroupDocsViewerException.class.isAssignableFrom(InvalidPasswordException.class)) {
+            return StringUtils.isEmpty(password) ? PASSWORD_REQUIRED : INCORRECT_PASSWORD;
+        } else {
+            return ex.getMessage();
         }
-        return message;
     }
 
     protected RotatedPageEntity getRotatedPageEntity(int pageNumber, int resultAngle) {
@@ -273,8 +277,7 @@ public class ViewerServiceImpl implements ViewerService {
     protected List<PageDescriptionEntity> getPageDescriptionEntities(List<PageData> containerPages, List<Page> pagesData) throws IOException {
         List<PageDescriptionEntity> pages = new ArrayList<>();
         for (int i = 0; i < containerPages.size(); i++) {
-            PageData page = containerPages.get(i);
-            PageDescriptionEntity pageDescriptionEntity = getPageDescriptionEntity(page);
+            PageDescriptionEntity pageDescriptionEntity = getPageDescriptionEntity(containerPages.get(i));
             if (!pagesData.isEmpty()) {
                 Page pageData = pagesData.get(i);
                 pageDescriptionEntity.setData(getPageData(pageData));
