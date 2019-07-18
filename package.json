@@ -2,7 +2,6 @@
   "name": "groupdocs.viewer-for-java-dropwizard",
   "version": "1.0.0",
   "description": "![Alt text](https://raw.githubusercontent.com/groupdocs-viewer/GroupDocs.Viewer-for-Java-Dropwizard/master/src/main/resources/assets/viewer/images/banner.png \"GroupDocs.Viewer\")\r # GroupDocs.Viewer for Java Dropwizard Example\r ###### version 1.6.0",
-  "main": "gulpfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,9 +16,7 @@
   },
   "homepage": "https://github.com/groupdocs-viewer/GroupDocs.Viewer-for-Java-Dropwizard#readme",
   "dependencies": {
-    "@groupdocs.examples.angular/viewer": "^0.1.3"
+    "@groupdocs.examples.angular/viewer": "^0.2.2"
   },
-  "devDependencies": {
-    "gulp": "^4.0.0"
-  }
+  "devDependencies": {}
 }
