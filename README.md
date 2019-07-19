@@ -1,6 +1,6 @@
 ![Document viewer](https://raw.githubusercontent.com/groupdocs-viewer/groupdocs-viewer.github.io/master/resources/image/banner.png "GroupDocs.Viewer")
 # GroupDocs.Viewer for Java Dropwizard Example
-###### version 1.14.18
+###### version 1.14.19
 
 [![Build Status](https://travis-ci.org/groupdocs-viewer/GroupDocs.Viewer-for-Java-Dropwizard.svg?branch=master)](https://travis-ci.org/groupdocs-viewer/GroupDocs.Viewer-for-Java-Dropwizard)
 [![Maintainability](https://api.codeclimate.com/v1/badges/a0836eb386f80c572f25/maintainability)](https://codeclimate.com/github/groupdocs-viewer/GroupDocs.Viewer-for-Java-Dropwizard/maintainability)
@@ -99,10 +99,10 @@ Download [latest release](https://github.com/groupdocs-viewer/GroupDocs.Viewer-f
 **Note**: This method is **recommended** for running this sample behind firewall.
 
 ```bash
-curl -J -L -o release.tar.gz https://github.com/groupdocs-viewer/GroupDocs.Viewer-for-Java-Dropwizard/releases/download/1.14.18/release.tar.gz
+curl -J -L -o release.tar.gz https://github.com/groupdocs-viewer/GroupDocs.Viewer-for-Java-Dropwizard/releases/download/1.14.19/release.tar.gz
 tar -xvzf release.tar.gz
 cd release
-java -jar viewer-1.14.18.jar configuration.yaml
+java -jar viewer-1.14.19.jar configuration.yaml
 ## Open http://localhost:8080/viewer/ in your favorite browser.
 ```
 
