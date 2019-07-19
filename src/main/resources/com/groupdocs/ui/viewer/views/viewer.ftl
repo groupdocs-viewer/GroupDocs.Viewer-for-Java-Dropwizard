@@ -2,12 +2,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <title>GroupDocs.Viewer for Java Dropwizard</title>
-    <base href="/" />
+    <base href="/"/>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" type="text/css" href="/assets/angular/viewer/dist/assets/css/all.min.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
 </head>
 <body>
 <client-root></client-root>
