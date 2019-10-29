@@ -129,7 +129,7 @@ public class ViewerServiceImpl implements ViewerService {
             // set file/folder name
             fileDescription.setName(fd.getName());
             // set file type
-            fileDescription.setDocType(fd.getDocumentType());
+            fileDescription.setDocType(fd.getFileFormat());
             // set is directory true/false
             fileDescription.setDirectory(fd.isDirectory());
             // set file size
