@@ -28,6 +28,7 @@ import com.groupdocs.viewer.domain.options.FileListOptions;
 import com.groupdocs.viewer.domain.options.RotatePageOptions;
 import com.groupdocs.viewer.exception.GroupDocsViewerException;
 import com.groupdocs.viewer.exception.InvalidPasswordException;
+import com.groupdocs.viewer.exception.PasswordProtectedFileException;
 import com.groupdocs.viewer.handler.ViewerHandler;
 import com.groupdocs.viewer.handler.ViewerHtmlHandler;
 import com.groupdocs.viewer.handler.ViewerImageHandler;
@@ -156,8 +157,9 @@ public class ViewerServiceImpl implements ViewerService {
 
             // return document description
             return getLoadDocumentEntity(documentGuid, password, documentInfoContainer, loadAllPages);
-        } catch (GroupDocsViewerException ex) {
-            throw new TotalGroupDocsException(getExceptionMessage(password, ex), ex);
+        } catch (InvalidPasswordException
+                | PasswordProtectedFileException ex) {
+            throw new TotalGroupDocsException(getExceptionMessage(password), ex);
         } catch (Exception ex) {
             throw new TotalGroupDocsException(ex.getMessage(), ex);
         }
@@ -256,13 +258,8 @@ public class ViewerServiceImpl implements ViewerService {
         return documentInfoOptions;
     }
 
-    protected String getExceptionMessage(String password, GroupDocsViewerException ex) {
-        // Set exception message
-        if (GroupDocsViewerException.class.isAssignableFrom(InvalidPasswordException.class)) {
-            return StringUtils.isEmpty(password) ? PASSWORD_REQUIRED : INCORRECT_PASSWORD;
-        } else {
-            return ex.getMessage();
-        }
+    protected String getExceptionMessage(String password) {
+        return StringUtils.isEmpty(password) ? PASSWORD_REQUIRED : INCORRECT_PASSWORD;
     }
 
     protected RotatedPageEntity getRotatedPageEntity(int pageNumber, int resultAngle) {
