@@ -1,30 +1,28 @@
 package com.groupdocs.ui.viewer.resources;
 
 import com.groupdocs.ui.common.config.GlobalConfiguration;
-import com.groupdocs.ui.common.entity.web.FileDescriptionEntity;
-import com.groupdocs.ui.common.entity.web.LoadDocumentEntity;
-import com.groupdocs.ui.common.entity.web.PageDescriptionEntity;
-import com.groupdocs.ui.common.entity.web.UploadedDocumentEntity;
-import com.groupdocs.ui.common.entity.web.request.FileTreeRequest;
-import com.groupdocs.ui.common.entity.web.request.LoadDocumentPageRequest;
-import com.groupdocs.ui.common.entity.web.request.LoadDocumentRequest;
 import com.groupdocs.ui.common.exception.TotalGroupDocsException;
 import com.groupdocs.ui.common.resources.Resources;
-import com.groupdocs.ui.viewer.entity.web.RotatedPageEntity;
-import com.groupdocs.ui.viewer.model.ViewerConfigurationModel;
-import com.groupdocs.ui.viewer.model.web.RotateDocumentPagesRequest;
+import com.groupdocs.ui.viewer.config.ViewerConfiguration;
+import com.groupdocs.ui.viewer.model.request.FileTreeRequest;
+import com.groupdocs.ui.viewer.model.request.LoadDocumentPageRequest;
+import com.groupdocs.ui.viewer.model.request.LoadDocumentRequest;
+import com.groupdocs.ui.viewer.model.request.RotateDocumentPagesRequest;
+import com.groupdocs.ui.viewer.model.response.FileDescriptionEntity;
+import com.groupdocs.ui.viewer.model.response.LoadDocumentEntity;
+import com.groupdocs.ui.viewer.model.response.PageDescriptionEntity;
+import com.groupdocs.ui.viewer.model.response.UploadedDocumentEntity;
 import com.groupdocs.ui.viewer.service.ViewerService;
 import com.groupdocs.ui.viewer.service.ViewerServiceImpl;
 import com.groupdocs.ui.viewer.views.Viewer;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
 import java.io.InputStream;
 import java.net.UnknownHostException;
 import java.util.List;
@@ -40,8 +38,6 @@ import static javax.ws.rs.core.MediaType.*;
 
 @Path(value = "/viewer")
 public class ViewerResources extends Resources {
-
-    private static final Logger logger = LoggerFactory.getLogger(ViewerResources.class);
 
     private final ViewerService viewerService;
 
@@ -71,8 +67,8 @@ public class ViewerResources extends Resources {
     @GET
     @Path(value = "/loadConfig")
     @Produces(APPLICATION_JSON)
-    public ViewerConfigurationModel loadConfig() {
-        return ViewerConfigurationModel.createViewerConfiguration(globalConfiguration.getViewer(), globalConfiguration.getCommon());
+    public ViewerConfiguration loadConfig() {
+        return ViewerConfiguration.createViewerConfiguration(globalConfiguration.getViewer(), globalConfiguration.getCommon());
     }
 
     /**
@@ -86,7 +82,7 @@ public class ViewerResources extends Resources {
     @Produces(APPLICATION_JSON)
     @Consumes(APPLICATION_JSON)
     public List<FileDescriptionEntity> loadFileTree(FileTreeRequest fileTreeRequest) {
-        return viewerService.loadFileTree(fileTreeRequest);
+        return viewerService.getFileList(fileTreeRequest.getPath());
     }
 
     /**
@@ -103,7 +99,7 @@ public class ViewerResources extends Resources {
         if (StringUtils.isEmpty(loadDocumentRequest.getGuid())) {
             throw new TotalGroupDocsException("Document guid is empty!");
         }
-        return viewerService.loadDocumentDescription(loadDocumentRequest, globalConfiguration.getViewer().getPreloadPageCount() == 0);
+        return viewerService.loadDocument(loadDocumentRequest, globalConfiguration.getViewer().getPreloadPageCount() == 0);
     }
 
     /**
@@ -117,7 +113,7 @@ public class ViewerResources extends Resources {
     @Produces(APPLICATION_JSON)
     @Consumes(APPLICATION_JSON)
     public LoadDocumentEntity loadThumbnails(LoadDocumentRequest loadDocumentRequest) {
-        return viewerService.loadDocumentDescription(loadDocumentRequest, true);
+        return viewerService.loadDocument(loadDocumentRequest, true);
     }
 
     /**
@@ -145,7 +141,7 @@ public class ViewerResources extends Resources {
     @Produces(APPLICATION_JSON)
     @Consumes(APPLICATION_JSON)
     public LoadDocumentEntity loadPrint(LoadDocumentRequest loadDocumentRequest) {
-        return viewerService.loadDocumentDescription(loadDocumentRequest, true);
+        return viewerService.loadDocument(loadDocumentRequest, true);
     }
 
     /**
@@ -170,7 +166,7 @@ public class ViewerResources extends Resources {
     @Path(value = "/rotateDocumentPages")
     @Produces(APPLICATION_JSON)
     @Consumes(APPLICATION_JSON)
-    public List<RotatedPageEntity> rotateDocumentPages(RotateDocumentPagesRequest rotateDocumentPagesRequest) {
+    public PageDescriptionEntity rotateDocumentPages(RotateDocumentPagesRequest rotateDocumentPagesRequest) {
         return viewerService.rotateDocumentPages(rotateDocumentPagesRequest);
     }
 
@@ -185,6 +181,13 @@ public class ViewerResources extends Resources {
     @Produces(APPLICATION_OCTET_STREAM)
     public void downloadDocument(@QueryParam("path") String documentGuid, @Context HttpServletResponse response) {
         downloadFile(response, documentGuid);
+    }
+
+    @GET
+    @Path(value = "resources/{guid}/{resourceName}")
+    @Produces(APPLICATION_OCTET_STREAM)
+    public Response downloadDocument(@PathParam("guid") String guid, @PathParam("resourceName") String resourceName) {
+        return viewerService.getResource(guid, resourceName);
     }
 
     /**

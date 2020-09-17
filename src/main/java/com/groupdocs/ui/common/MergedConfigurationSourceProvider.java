@@ -12,7 +12,7 @@ import java.util.Map;
  * Provider for reading two config files default and external file
  */
 public class MergedConfigurationSourceProvider implements ConfigurationSourceProvider {
-    private String defaultConfigFile;
+    private final String defaultConfigFile;
 
     public MergedConfigurationSourceProvider(@NotNull String defaultConfigFile) {
         this.defaultConfigFile = defaultConfigFile;

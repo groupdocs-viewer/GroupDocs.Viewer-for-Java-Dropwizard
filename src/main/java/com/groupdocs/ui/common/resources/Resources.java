@@ -96,7 +96,9 @@ public abstract class Resources {
             throw new TotalGroupDocsException(ex.getMessage(), ex);
         } finally {
             try {
-                uploadedInputStream.close();
+                if (uploadedInputStream != null) {
+                    uploadedInputStream.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -177,13 +179,14 @@ public abstract class Resources {
         try {
             File folder = new File(directory);
             File[] listOfFiles = folder.listFiles();
+            if (listOfFiles == null) {
+                throw new NullPointerException("Can't list files of '" + folder.getAbsolutePath() + "' folder");
+            }
             for (int i = 0; i < listOfFiles.length; i++) {
                 int number = i + 1;
                 String newFileName = FilenameUtils.removeExtension(fileName) + "-Copy(" + number + ")." + FilenameUtils.getExtension(fileName);
                 file = new File(directory + File.separator + newFileName);
-                if(file.exists()) {
-                    continue;
-                } else {
+                if (!file.exists()) {
                     break;
                 }
             }

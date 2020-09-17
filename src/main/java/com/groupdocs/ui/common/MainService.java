@@ -39,7 +39,7 @@ public class MainService extends Application<GlobalConfiguration> {
     private static final String DEFAULT_CONFIGURATION_FILE = "defaultConfiguration.yml";
     private static final String EXTERNAL_CONFIGURATION_FILE = "configuration.yml";
 
-    private boolean defaultConfiguration;
+    private final boolean defaultConfiguration;
 
     public MainService() {
         super();
@@ -54,7 +54,7 @@ public class MainService extends Application<GlobalConfiguration> {
     public static void main(String[] args) throws Exception {
         if (args == null || args.length == 0 || (args.length == 1 && !COMMANDS.contains(args[0]))) {
             logger.info("Command is not specified. Use default: server.");
-            args = args.length == 1 ? new String[]{SERVER_COMMAND, args[0]} : new String[]{SERVER_COMMAND, EXTERNAL_CONFIGURATION_FILE};
+            args = args != null && args.length == 1 ? new String[]{SERVER_COMMAND, args[0]} : new String[]{SERVER_COMMAND, EXTERNAL_CONFIGURATION_FILE};
         }
         if (args.length > 1 && StringUtils.isNotEmpty(args[1]) && new File(args[1]).exists()) {
             new MainService(false).run(args);

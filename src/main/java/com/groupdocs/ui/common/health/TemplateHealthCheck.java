@@ -14,7 +14,7 @@ public class TemplateHealthCheck extends HealthCheck {
     }
 
     @Override
-    protected Result check() throws Exception {
+    protected Result check() {
         return Result.healthy();
     }
 

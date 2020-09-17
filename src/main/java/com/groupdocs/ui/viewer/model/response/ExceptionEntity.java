@@ -1,4 +1,4 @@
-package com.groupdocs.ui.common.entity.web;
+package com.groupdocs.ui.viewer.model.response;
 
 /**
  * ExceptionEntity
@@ -12,6 +12,10 @@ public class ExceptionEntity {
     public ExceptionEntity() {
     }
 
+    public ExceptionEntity(String message) {
+        this.message = message;
+    }
+
     public ExceptionEntity(String message, Exception exception) {
         this.message = message;
         this.exception = exception;
@@ -19,6 +23,7 @@ public class ExceptionEntity {
 
     /**
      * Get exception message
+     *
      * @return message
      */
     public String getMessage() {
@@ -27,6 +32,7 @@ public class ExceptionEntity {
 
     /**
      * Set exception message
+     *
      * @param message message
      */
     public void setMessage(String message) {
@@ -35,6 +41,7 @@ public class ExceptionEntity {
 
     /**
      * Get exception
+     *
      * @return exception
      */
     public Exception getException() {
@@ -43,6 +50,7 @@ public class ExceptionEntity {
 
     /**
      * Set exception
+     *
      * @param exception exception
      */
     public void setException(Exception exception) {
@@ -50,3 +58,4 @@ public class ExceptionEntity {
     }
 
 }
+
