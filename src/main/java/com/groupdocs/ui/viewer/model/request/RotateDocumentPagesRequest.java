@@ -1,6 +1,4 @@
-package com.groupdocs.ui.viewer.model.web;
-
-import com.groupdocs.ui.common.entity.web.request.LoadDocumentRequest;
+package com.groupdocs.ui.viewer.model.request;
 
 import java.util.List;
 

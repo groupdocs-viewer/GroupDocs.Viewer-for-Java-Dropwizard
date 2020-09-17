@@ -1,4 +1,4 @@
-package com.groupdocs.ui.common.entity.web;
+package com.groupdocs.ui.viewer.model.response;
 
 /**
  * PageDescriptionEntity
@@ -6,9 +6,6 @@ package com.groupdocs.ui.common.entity.web;
  * @author Aspose Pty Ltd
  */
 public class PageDescriptionEntity {
-    /**
-     * Page data
-     */
     private String data;
     private int angle;
     private double width;

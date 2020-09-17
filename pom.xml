@@ -6,7 +6,7 @@
 
     <groupId>com.groupdocs.ui</groupId>
     <artifactId>viewer</artifactId>
-    <version>1.14.27</version>
+    <version>1.14.28</version>
     <packaging>jar</packaging>
 
     <name>GroupDocs.Viewer Dropwizard</name>
@@ -74,9 +74,14 @@
             <version>2.6</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
+        </dependency>
+        <dependency>
             <groupId>com.groupdocs</groupId>
             <artifactId>groupdocs-viewer</artifactId>
-            <version>19.8.1</version>
+            <version>20.7</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -88,6 +93,11 @@
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
             <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.9.4</version>
         </dependency>
     </dependencies>
 

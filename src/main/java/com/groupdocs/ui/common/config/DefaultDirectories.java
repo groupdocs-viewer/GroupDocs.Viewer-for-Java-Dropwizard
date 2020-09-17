@@ -27,7 +27,9 @@ public class DefaultDirectories {
                 return defaultLicFile.toString();
             }
         }
-        licFolder.mkdirs();
+        if (!licFolder.exists() && !licFolder.mkdirs()) {
+            throw new RuntimeException("Can't create license directory '" + licFolder.getAbsolutePath() + "'");
+        }
         logger.info("License file path is incorrect, application launched in trial mode");
         return "";
     }
@@ -81,7 +83,11 @@ public class DefaultDirectories {
     }
 
     public static Path getDefaultLicFile(File licFolder) {
-        for (File file : licFolder.listFiles()) {
+        final File[] files = licFolder.listFiles();
+        if (files == null) {
+            throw new NullPointerException("Can't list files of '" + licFolder.getAbsolutePath() + "' folder");
+        }
+        for (File file : files) {
             if (file.getName().endsWith(LIC)) {
                 return FileSystems.getDefault().getPath(LICENSES + File.separator + file.getName()).toAbsolutePath();
             }

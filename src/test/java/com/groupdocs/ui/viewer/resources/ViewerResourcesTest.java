@@ -20,7 +20,7 @@ public class ViewerResourcesTest {
 
     @ClassRule
     public static final DropwizardAppRule<GlobalConfiguration> RULE =
-            new DropwizardAppRule<>(MainService.class, System.getProperty("user.dir") + File.separator +"configuration.yml");
+            new DropwizardAppRule<GlobalConfiguration>(MainService.class, System.getProperty("user.dir") + File.separator +"configuration.yml");
 
     @Test
     public void getView() {

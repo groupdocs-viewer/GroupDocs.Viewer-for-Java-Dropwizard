@@ -1,6 +1,6 @@
 package com.groupdocs.ui.common.exception;
 
-import com.groupdocs.ui.common.entity.web.ExceptionEntity;
+import com.groupdocs.ui.viewer.model.response.ExceptionEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
