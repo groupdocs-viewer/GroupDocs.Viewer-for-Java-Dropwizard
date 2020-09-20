@@ -9,5 +9,4 @@ import java.util.List;
 public abstract class PdfViewInfoMixIn {
     PdfViewInfoMixIn(@JsonProperty("fileType") FileType fileType, @JsonProperty("pages") List<Page> pages, @JsonProperty("printingAllowed") boolean printingAllowed) {
     }
-
 }

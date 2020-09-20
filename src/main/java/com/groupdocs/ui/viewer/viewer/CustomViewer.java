@@ -6,9 +6,7 @@ import com.groupdocs.ui.viewer.util.Utils;
 import com.groupdocs.viewer.Viewer;
 import com.groupdocs.viewer.interfaces.PageStreamFactory;
 import com.groupdocs.viewer.options.*;
-import com.groupdocs.viewer.results.Page;
-import com.groupdocs.viewer.results.PdfViewInfo;
-import com.groupdocs.viewer.results.ViewInfo;
+import com.groupdocs.viewer.results.*;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.awt.*;
@@ -21,6 +19,7 @@ import java.util.List;
 
 
 public abstract class CustomViewer<T extends ViewOptions> {
+    private static final Class<?>[] DESERIALIZATION_CLASSES = new Class[]{CadViewInfo.class, PdfViewInfo.class, ProjectManagementViewInfo.class, OutlookViewInfo.class, ViewInfo.class};
     protected static ViewerConfiguration viewerConfiguration;
     protected final String filePath;
     protected final ViewerCache cache;
@@ -75,6 +74,9 @@ public abstract class CustomViewer<T extends ViewOptions> {
 
     public void createCache() {
         ViewInfo viewInfo = this.getViewInfo();
+        if (viewInfo == null) {
+            throw new IllegalStateException("Can't get ViewInfo. The problem can be with deserealization (DESERIALIZATION_CLASSES)");
+        }
 
         synchronized (this.filePath) {
             int[] missingPages = this.getPagesMissingFromCache(viewInfo.getPages());
@@ -89,7 +91,7 @@ public abstract class CustomViewer<T extends ViewOptions> {
         List<Integer> missingPages = new ArrayList<>();
         for (Page page : pages) {
             String pageKey = "p" + page.getNumber() + getCachePagesExtension();
-            if (this.cache.isNotContains(pageKey)) {
+            if (this.cache.doesNotContains(pageKey)) {
                 missingPages.add(page.getNumber());
             }
         }
@@ -99,18 +101,18 @@ public abstract class CustomViewer<T extends ViewOptions> {
 
     protected abstract String getCachePagesExtension();
 
-    protected ViewInfo getViewInfo() {
+    public ViewInfo getViewInfo() {
         String cacheKey = "view_info.dat";
 
-        if (cache.isNotContains(cacheKey)) {
+        if (cache.doesNotContains(cacheKey)) {
             synchronized (filePath) {
-                if (cache.isNotContains(cacheKey)) {
-                    return cache.getValue(cacheKey, this.readViewInfo(viewInfoOptions), new Class[]{ViewInfo.class, PdfViewInfo.class});
+                if (cache.doesNotContains(cacheKey)) {
+                    return cache.getValue(cacheKey, this.readViewInfo(viewInfoOptions), DESERIALIZATION_CLASSES);
                 }
             }
         }
 
-        return cache.getValue(cacheKey, null, new Class[]{ViewInfo.class, PdfViewInfo.class});
+        return cache.getValue(cacheKey, null, DESERIALIZATION_CLASSES);
     }
 
     private ViewInfo readViewInfo(ViewInfoOptions viewInfoOptions) {
