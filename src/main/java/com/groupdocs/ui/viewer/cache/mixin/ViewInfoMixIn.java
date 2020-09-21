@@ -9,5 +9,4 @@ import java.util.List;
 public abstract class ViewInfoMixIn {
     ViewInfoMixIn(@JsonProperty("fileType") FileType fileType, @JsonProperty("pages") List<Page> pages) {
     }
-
 }
