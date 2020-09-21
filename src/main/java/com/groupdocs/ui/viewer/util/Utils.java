@@ -9,7 +9,6 @@ import com.groupdocs.viewer.results.ViewInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.activation.MimetypesFileTypeMap;
 import javax.ws.rs.core.MediaType;
 import java.io.File;
 import java.io.IOException;
@@ -28,16 +27,9 @@ public class Utils {
     }
 
     public static MediaType detectMediaType(String fileName) {
-        String mediaType;
+        String mediaType = null;
         try {
-            mediaType = Files.probeContentType(new File(fileName).toPath());
-            if (mediaType == null) {
-                mediaType = URLConnection.guessContentTypeFromName(fileName);
-            }
-            if (mediaType == null) {
-                mediaType = new MimetypesFileTypeMap().getContentType(fileName);
-            }
-            if (mediaType == null || (mediaType.equals(MediaType.APPLICATION_OCTET_STREAM) && fileName.contains("."))) {
+            if (fileName.contains(".")) {
                 final String extension = fileName.substring(fileName.lastIndexOf("."));
                 switch (extension) {
                     case ".otf":
@@ -58,8 +50,20 @@ public class Utils {
                     case ".eot":
                         mediaType = "application/vnd.ms-fontobject";
                         break;
+                    case ".js":
+                        mediaType = "application/javascript";
+                        break;
                     default:
-                        mediaType = MediaType.APPLICATION_OCTET_STREAM;
+                        mediaType = null;
+                }
+            }
+            if (mediaType == null) {
+                mediaType = Files.probeContentType(new File(fileName).toPath());
+                if (mediaType == null) {
+                    mediaType = URLConnection.guessContentTypeFromName(fileName);
+                }
+                if (mediaType == null) {
+                    return MediaType.APPLICATION_OCTET_STREAM_TYPE;
                 }
             }
         } catch (IOException e) {
