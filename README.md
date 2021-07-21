@@ -6,6 +6,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/a0836eb386f80c572f25/maintainability)](https://codeclimate.com/github/groupdocs-viewer/GroupDocs.Viewer-for-Java-Dropwizard/maintainability)
 [![GitHub license](https://img.shields.io/github/license/groupdocs-viewer/GroupDocs.Viewer-for-Java-Dropwizard.svg)](https://github.com/groupdocs-viewer/GroupDocs.Viewer-for-Java-Dropwizard/blob/master/LICENSE)
 
+:warning: **This repository has moved to https://github.com/groupdocs-viewer/GroupDocs.Viewer-for-Java/tree/master/Demos/Dropwizard**
 
 ## System Requirements
 - Java 8 (JDK 1.8)
